@@ -1,6 +1,6 @@
 import os
 
-base_path = r"C:\Users\hp\Desktop\Projet_Pfa"
+base_path = r"C:\Users\hp\Desktop\prostory-ai"
 
 # Mapping: { Path: (Detailed Comment, Default Skeleton) }
 files_data = {

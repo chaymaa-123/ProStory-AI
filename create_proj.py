@@ -1,6 +1,6 @@
 import os
 
-base_path = r"C:\Users\hp\Desktop\Projet_Pfa"
+base_path = r"C:\Users\hp\Desktop\prostory-ai"
 
 files = {
     r"base_de_donnees\schema.sql": """/*

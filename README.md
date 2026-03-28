@@ -1,4 +1,4 @@
-# ProStory AI
+# prostory-ai
 
 Bienvenue sur le dépôt du projet ! Ce document explique à l'équipe de développement comment configurer l'environnement de développement local après avoir récupéré le code.
 

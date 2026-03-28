@@ -1,6 +1,6 @@
 @echo off
 echo =======================================================
-echo Installation des dependances pour ProStory-AI (Windows)
+echo Installation des dependances pour prostory-ai (Windows)
 echo =======================================================
 
 echo.
