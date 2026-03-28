@@ -1,0 +1,14 @@
+/*
+1. Objectif : Lister les dépendances React.
+2. Contenu prévu : React, React-Router, Axios.
+3. Responsable : Frontend.
+4. Interactions : Node.js, npm.
+5. Checklist :
+   - [ ] Ajouter axios, react-router-dom
+*/
+
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "dependencies": {}
+}

@@ -1,0 +1,64 @@
+# ==========================================
+# GESTION DES ENVIRONNEMENTS & SÉCURITÉ
+# ==========================================
+# Ignorer absolument le fichier contenant les clés secrètes et mots de passe !
+backend/environnement.env
+*.env
+.env
+.env.*
+.env.local
+
+# ==========================================
+# BACKEND (Python / FastAPI)
+# ==========================================
+# Fichiers compilés par Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environnements Virtuels Python
+venv/
+env/
+.venv/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==========================================
+# FRONTEND (React / Vite / Node.js)
+# ==========================================
+# Dépendances Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Fichiers de build (Production)
+dist/
+build/
+.next/
+
+# ==========================================
+# BASES DE DONNÉES LOCALES & LOGS
+# ==========================================
+*.sqlite3
+*.db
+*.log
+
+# ==========================================
+# SYSTÈME D'EXPLOITATION & IDE
+# ==========================================
+# Windows
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# MacOS (si un autre dev sur Mac rejoint l'équipe)
+.DS_Store
+
+# Outils de développement (VSCode, PyCharm)
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

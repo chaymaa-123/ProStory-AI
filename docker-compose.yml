@@ -1,0 +1,10 @@
+# 1. Objectif : Conteneuriser la base de données.
+# 2. Contenu prévu : base postgres avec pgvector.
+# 3. Responsable : Database.
+# 4. Interactions : DB locale.
+# 5. Checklist :
+#    - [ ] Déclarer l'image et le volume
+
+version: '3.8'
+services:
+  # config...

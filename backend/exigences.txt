@@ -1,0 +1,18 @@
+# 1. Objectif : Lister les bibliothèques Python nécessaires.
+# 2. Contenu prévu : Liste des paquets pour pip.
+# 3. Responsable : Backend / IA.
+# 4. Interactions : Utilisé par pip install.
+# 5. Checklist :
+#    - [ ] Ajouter fastapi, uvicorn, sqlalchemy, pgvector
+#    - [ ] Ajouter sentence-transformers
+
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+pgvector
+sentence-transformers
+python-jose
+passlib
+python-dotenv
+pydantic
