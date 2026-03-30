@@ -1,26 +1,27 @@
 /**
- * FICHIER : App.jsx
- * OBJECTIF : Composant racine et configuration du routeur (React Router).
- * CE QU'IL FAUT FAIRE ICI :
- * 1. Ajouter les nouvelles routes (ex: /profil, /parametres, /experience/:id).
- * 2. Implémenter des routes privées (PrivateRoute) pour bloquer l'accès aux utilisateurs non connectés.
+ * ProStory-AI - Composant racine React
+ * Configure le routeur et la structure principale de l'application
  */
 
-/*
-1. Objectif : Cœur de l'application React.
-2. Contenu prévu : Configuration du Router.
-3. Responsable : Frontend.
-4. Interactions : Affiche les pages/.
-5. Checklist :
-   - [ ] Définir les <Route>
-*/
-
-import React from 'react';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Navigation } from './components/Navigation'
+import { HomePage } from './pages/HomePage'
+import { ConnexionInscriptionPage } from './pages/ConnexionInscription'
 
 export default function App() {
   return (
-    <div>
-      <h1>App</h1>
-    </div>
-  );
+    <Router>
+      <div className="min-h-screen bg-gray-50">
+        <Navigation />
+        <main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/connexion" element={<ConnexionInscriptionPage />} />
+            <Route path="/inscription" element={<ConnexionInscriptionPage />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
+  )
 }

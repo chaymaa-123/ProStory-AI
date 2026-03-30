@@ -1,10 +1,21 @@
-# 1. Objectif : Conteneuriser la base de données.
-# 2. Contenu prévu : base postgres avec pgvector.
-# 3. Responsable : Database.
-# 4. Interactions : DB locale.
-# 5. Checklist :
-#    - [ ] Déclarer l'image et le volume
+# ProStory-AI - Configuration PostgreSQL locale avec pgvector
+# Utilisé pour le développement local si vous préférez une DB locale à Supabase
 
 version: '3.8'
 services:
-  # config...
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: prostory-postgres
+    environment:
+      POSTGRES_DB: prostory_ai
+      POSTGRES_USER: prostory_user
+      POSTGRES_PASSWORD: prostory_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./base_de_donnees/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

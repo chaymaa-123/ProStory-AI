@@ -1,18 +1,29 @@
-# 1. Objectif : Lister les bibliothèques Python nécessaires.
-# 2. Contenu prévu : Liste des paquets pour pip.
-# 3. Responsable : Backend / IA.
-# 4. Interactions : Utilisé par pip install.
-# 5. Checklist :
-#    - [ ] Ajouter fastapi, uvicorn, sqlalchemy, pgvector
-#    - [ ] Ajouter sentence-transformers
+# ProStory-AI - Dépendances Python pour le backend
+# Stack : FastAPI + Supabase + IA (embeddings)
 
-fastapi
-uvicorn
-sqlalchemy
-psycopg2-binary
-pgvector
-sentence-transformers
-python-jose
-passlib
-python-dotenv
-pydantic
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database - Supabase (PostgreSQL)
+supabase==2.3.0
+psycopg2-binary==2.9.9
+
+# IA et Embeddings
+sentence-transformers==2.2.2
+openai==1.3.7
+numpy==1.24.3
+
+# Auth et Sécurité
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Utils
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Pour le développement local avec PostgreSQL direct (optionnel)
+sqlalchemy==2.0.23
+pgvector==0.2.4
