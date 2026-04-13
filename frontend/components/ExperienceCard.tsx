@@ -3,7 +3,8 @@
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Heart, MessageCircle } from 'lucide-react'
-import { useState } from 'react'
+import { useState  } from 'react'
+
 
 interface ExperienceCardProps {
   id: string
@@ -39,6 +40,7 @@ export function ExperienceCard({
     e.stopPropagation()
     setIsLiked(!isLiked)
   }
+
 
   return (
     <Card className="p-6 border border-border hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer group">
