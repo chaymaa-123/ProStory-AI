@@ -21,6 +21,7 @@ CE QU'IL FAUT FAIRE ICI :
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.auth import UserRegister, register_new_user, UserLogin, login_user 
+from app.ai.analytics import router as ai_router 
 
 
 app = FastAPI()
@@ -32,6 +33,9 @@ app.add_middleware(CORSMiddleware,
     allow_methods=["*"],             
     allow_headers=["*"],              
 )
+
+# Inclure le routeur IA
+app.include_router(ai_router, prefix="/api")
 
 @app.post("/auth/register")
 async def register(user: UserRegister):

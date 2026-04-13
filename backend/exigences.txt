@@ -11,6 +11,9 @@ psycopg2-binary
 
 # IA et Embeddings
 sentence-transformers
+transformers
+torch
+keybert
 openai
 numpy
 
