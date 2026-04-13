@@ -19,9 +19,24 @@ CE QU'IL FAUT FAIRE ICI :
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.auth import UserRegister, register_new_user, UserLogin, login_user 
+
 
 app = FastAPI()
 
-@app.get('/')
-def read_root():
-    return {'message': 'Hello World'}
+
+app.add_middleware(CORSMiddleware,
+    allow_origins=["http://localhost:3000"],       
+    allow_credentials=True,
+    allow_methods=["*"],             
+    allow_headers=["*"],              
+)
+
+@app.post("/auth/register")
+async def register(user: UserRegister):
+    return register_new_user(user)
+
+@app.post("/auth/login")
+async def login(credentials: UserLogin):
+    return login_user(credentials)

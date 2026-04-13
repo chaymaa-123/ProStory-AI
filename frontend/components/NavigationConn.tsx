@@ -19,11 +19,6 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
     setMounted(true)
   }, [])
 
-  const navItems = [
-    { label: 'Feed', href: '/feed' },
-    { label: 'Events', href: '/events' },
-    { label: 'Dashboard', href: '/dashboard' },
-  ]
 
   const isActive = (href: string) => currentPath === href
 
@@ -40,21 +35,7 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+    
 
           {/* Right side actions */}
           <div className="flex items-center gap-2">
@@ -102,20 +83,7 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-border py-4 space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+           
             <div className="px-4 pt-2 border-t border-border">
               <Link href="/auth" className="block w-full">
                 <Button
