@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routes import experiences_api
 from .coeur.base_de_donnees import engine, Base
+from app.auth import UserRegister, register_new_user, UserLogin, login_user 
 
 # Créer les tables au démarrage
 Base.metadata.create_all(bind=engine)
@@ -35,4 +36,36 @@ def read_root():
 
 @app.get("/health")
 def health_check():
+    """
+    Vérifie si l'API est fonctionnelle.
+
+    Returns:
+        dict: {status: ok}
+    """
     return {"status": "ok"}
+
+@app.post("/auth/register")
+async def register(user: UserRegister):
+    """
+    Enregistre un nouvel utilisateur.
+
+    Args:
+        user (UserRegister): Informations de l'utilisateur à enregistrer.
+
+    Returns:
+        dict: Informations de l'utilisateur enregistré.
+    """
+    return register_new_user(user)
+
+@app.post("/auth/login")
+async def login(credentials: UserLogin):
+    """
+    Connecte un utilisateur existant.
+
+    Args:
+        credentials (UserLogin): Informations de connexion de l'utilisateur.
+
+    Returns:
+        dict: Informations de l'utilisateur connecté.
+    """
+    return login_user(credentials)
