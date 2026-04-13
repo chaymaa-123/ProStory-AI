@@ -1,72 +1,95 @@
-from sqlalchemy.orm import Session
-from sqlalchemy import desc
-from typing import List, Optional
-from ..modeles.experience_modele import Experience
+from typing import List, Optional, Dict, Any
+from ..coeur.base_de_donnees import supabase
 from ..schemas.experience_schema import ExperienceCreate, ExperienceUpdate
 
 
 class RepositoryExperience:
-    """Repository pour les opérations DB des expériences"""
-    
+    """Repository pour les opérations DB des expériences via Supabase"""
+
+    TABLE_NAME = "experiences"
+
     @staticmethod
-    def creer_experience(db: Session, experience_data: ExperienceCreate, utilisateur_id: int) -> Experience:
+    def creer_experience(experience_data: ExperienceCreate, utilisateur_id: int) -> Dict[str, Any]:
         """Crée une nouvelle expérience"""
-        db_experience = Experience(
-            utilisateur_id=utilisateur_id,
-            titre=experience_data.titre,
-            contenu=experience_data.contenu,
-            tags=experience_data.tags,
-            domaine_activite=experience_data.domaine_activite
-        )
-        db.add(db_experience)
-        db.commit()
-        db.refresh(db_experience)
-        return db_experience
-    
+        data = {
+            "utilisateur_id": utilisateur_id,
+            "titre": experience_data.titre,
+            "contenu": experience_data.contenu,
+            "tags": experience_data.tags,
+            "domaine_activite": experience_data.domaine_activite,
+        }
+        response = supabase.table(RepositoryExperience.TABLE_NAME).insert(data).execute()
+        if response.data:
+            return response.data[0]
+        raise Exception("Erreur lors de la création de l'expérience")
+
     @staticmethod
-    def obtenir_par_id(db: Session, experience_id: int) -> Optional[Experience]:
+    def obtenir_par_id(experience_id: int) -> Optional[Dict[str, Any]]:
         """Récupère une expérience par ID"""
-        return db.query(Experience).filter(Experience.id == experience_id).first()
-    
+        response = supabase.table(RepositoryExperience.TABLE_NAME).select("*").eq("id", experience_id).execute()
+        if response.data:
+            return response.data[0]
+        return None
+
     @staticmethod
-    def obtenir_par_utilisateur(db: Session, utilisateur_id: int, skip: int = 0, limit: int = 10) -> List[Experience]:
+    def obtenir_par_utilisateur(utilisateur_id: int, skip: int = 0, limit: int = 10) -> List[Dict[str, Any]]:
         """Récupère les expériences d'un utilisateur"""
-        return db.query(Experience).filter(
-            Experience.utilisateur_id == utilisateur_id
-        ).order_by(desc(Experience.date_creation)).offset(skip).limit(limit).all()
-    
+        response = (
+            supabase.table(RepositoryExperience.TABLE_NAME)
+            .select("*")
+            .eq("utilisateur_id", utilisateur_id)
+            .order("date_creation", desc=True)
+            .range(skip, skip + limit - 1)
+            .execute()
+        )
+        return response.data if response.data else []
+
     @staticmethod
-    def obtenir_tous(db: Session, skip: int = 0, limit: int = 20) -> List[Experience]:
+    def obtenir_tous(skip: int = 0, limit: int = 20) -> List[Dict[str, Any]]:
         """Récupère toutes les expériences"""
-        return db.query(Experience).order_by(desc(Experience.date_creation)).offset(skip).limit(limit).all()
-    
+        response = (
+            supabase.table(RepositoryExperience.TABLE_NAME)
+            .select("*")
+            .order("date_creation", desc=True)
+            .range(skip, skip + limit - 1)
+            .execute()
+        )
+        return response.data if response.data else []
+
     @staticmethod
-    def mettre_a_jour(db: Session, experience_id: int, experience_data: ExperienceUpdate) -> Optional[Experience]:
+    def mettre_a_jour(experience_id: int, experience_data: ExperienceUpdate) -> Optional[Dict[str, Any]]:
         """Met à jour une expérience"""
-        db_experience = db.query(Experience).filter(Experience.id == experience_id).first()
-        if not db_experience:
-            return None
-        
+        update_data = {}
+
         if experience_data.titre is not None:
-            db_experience.titre = experience_data.titre
+            update_data["titre"] = experience_data.titre
         if experience_data.contenu is not None:
-            db_experience.contenu = experience_data.contenu
+            update_data["contenu"] = experience_data.contenu
         if experience_data.tags is not None:
-            db_experience.tags = experience_data.tags
+            update_data["tags"] = experience_data.tags
         if experience_data.domaine_activite is not None:
-            db_experience.domaine_activite = experience_data.domaine_activite
-        
-        db.commit()
-        db.refresh(db_experience)
-        return db_experience
-    
+            update_data["domaine_activite"] = experience_data.domaine_activite
+
+        if not update_data:
+            return RepositoryExperience.obtenir_par_id(experience_id)
+
+        response = (
+            supabase.table(RepositoryExperience.TABLE_NAME)
+            .update(update_data)
+            .eq("id", experience_id)
+            .execute()
+        )
+        if response.data:
+            return response.data[0]
+        return None
+
     @staticmethod
-    def supprimer(db: Session, experience_id: int) -> bool:
+    def supprimer(experience_id: int) -> bool:
         """Supprime une expérience"""
-        db_experience = db.query(Experience).filter(Experience.id == experience_id).first()
-        if not db_experience:
-            return False
-        
-        db.delete(db_experience)
-        db.commit()
-        return True
+        response = (
+            supabase.table(RepositoryExperience.TABLE_NAME)
+            .delete()
+            .eq("id", experience_id)
+            .execute()
+        )
+        return response.status_code == 204 or (response.data and len(response.data) > 0)

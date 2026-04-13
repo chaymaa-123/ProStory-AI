@@ -3,11 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routes import experiences_api
-from .coeur.base_de_donnees import engine, Base
-from app.auth import UserRegister, register_new_user, UserLogin, login_user 
-
-# Créer les tables au démarrage
-Base.metadata.create_all(bind=engine)
+from app.auth import UserRegister, register_new_user, UserLogin, login_user
 
 # Initialiser FastAPI
 app = FastAPI(
