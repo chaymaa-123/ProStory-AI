@@ -71,21 +71,13 @@ export default function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link href="/feed" className="w-full sm:w-auto">
+            <Link href="/auth/login" className="w-full sm:w-auto">
               <Button size="lg" className="w-full rounded-xl h-12 px-8 text-base font-semibold">
                 Commence maintenant
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
-            <Link href="/auth" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full rounded-xl h-12 px-8 text-base font-semibold"
-              >
-                Regarde le feed
-              </Button>
-            </Link>
+       
           </div>
 
           {/* Social proof */}
@@ -228,9 +220,9 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/feed" className="w-full sm:w-auto">
+            <Link href="/auth/login" className="w-full sm:w-auto">
               <Button size="lg" className="w-full rounded-xl h-12 px-12 text-base font-semibold">
-                Accéder au feed
+               Commence maintenant
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { LogIn, Mail, Lock, ArrowRight, Globe } from 'lucide-react';
 
 // Importations relatives pour éviter les erreurs de résolution d'alias
-import { Navigation } from '@/components/NavigationConn';
+import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

@@ -1,7 +1,7 @@
 'use client';
 
 
-import { Navigation } from '@/components/NavigationConn';
+import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

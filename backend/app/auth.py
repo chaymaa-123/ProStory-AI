@@ -104,6 +104,7 @@ def login_user(login_data: UserLogin):
         "token_type": "bearer",
         "user": {
             "name": user["name"],
+            "email": user["email"],
             "role": user["role"]
         }
     }
