@@ -1,46 +1,72 @@
-"""
-FICHIER : main.py
-OBJECTIF : Point d'entrée principal de l'API FastAPI.
-CE QU'IL FAUT FAIRE ICI :
-1. Importer et inclure (`app.include_router`) toutes les nouvelles routes (ex: utilisateurs, auth, admin).
-2. Configurer les middlewares CORS pour autoriser le frontend en production.
-3. Ajouter une gestion globale des exceptions si nécessaire.
-"""
-
-"""
-1. Objectif : Point d'entrée principal de l'API FastAPI.
-2. Contenu prévu : Initialisation de l'application, configuration CORS, inclusion des routeurs.
-3. Responsable : Backend.
-4. Interactions : Inclut tout le dossier routes/. Connecté au Frontend.
-5. Checklist :
-   - [ ] Instancier FastAPI
-   - [ ] Configurer les middlewares CORS pour React
-   - [ ] app.include_router(...) pour l'auth, les expériences, l'admin
-"""
+"""Point d'entrée principal de l'API FastAPI"""
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from .routes import experiences_api
+from app.auth import UserRegister, register_new_user, UserLogin, login_user
 from app.auth import UserRegister, register_new_user, UserLogin, login_user 
 from app.ai.analytics import router as ai_router 
 
+# Initialiser FastAPI
+app = FastAPI(
+    title="ProStory-AI API",
+    description="API pour le partage d'expériences professionnelles",
+    version="0.1.0"
+)
 
-app = FastAPI()
-
-
-app.add_middleware(CORSMiddleware,
-    allow_origins=["http://localhost:3000"],       
+# Configuration CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3001"],
     allow_credentials=True,
-    allow_methods=["*"],             
-    allow_headers=["*"],              
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Inclure le routeur IA
 app.include_router(ai_router, prefix="/api")
 
+# Inclure les routeurs
+app.include_router(experiences_api.router)
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Bienvenue sur ProStory-AI API", "docs": "/docs"}
+
+
+@app.get("/health")
+def health_check():
+    """
+    Vérifie si l'API est fonctionnelle.
+
+    Returns:
+        dict: {status: ok}
+    """
+    return {"status": "ok"}
+
 @app.post("/auth/register")
 async def register(user: UserRegister):
+    """
+    Enregistre un nouvel utilisateur.
+
+    Args:
+        user (UserRegister): Informations de l'utilisateur à enregistrer.
+
+    Returns:
+        dict: Informations de l'utilisateur enregistré.
+    """
     return register_new_user(user)
 
 @app.post("/auth/login")
 async def login(credentials: UserLogin):
+    """
+    Connecte un utilisateur existant.
+
+    Args:
+        credentials (UserLogin): Informations de connexion de l'utilisateur.
+
+    Returns:
+        dict: Informations de l'utilisateur connecté.
+    """
     return login_user(credentials)

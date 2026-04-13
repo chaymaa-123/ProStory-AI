@@ -1,18 +1,9 @@
 """
 FICHIER : base_de_donnees.py
-OBJECTIF : Configuration de la connexion PostgreSQL avec SQLAlchemy.
+OBJECTIF : Configuration de la connexion Supabase PostgreSQL.
 CE QU'IL FAUT FAIRE ICI :
-1. Ajuster les paramètres de pool de connexion si l'application grossit.
-2. Ne pas toucher à `get_db()` sauf si vous implémentez un système asynchrone (asyncpg).
-"""
-
-"""
-1. Objectif : Gérer la connexion à PostgreSQL.
-2. Contenu prévu : Création de l'engine SQLAlchemy et du model de session.
-3. Responsable : Backend / Database.
-4. Interactions : Fournit la DB aux repositories.
-5. Checklist :
-   - [ ] Créer l'engine et la fonction get_db()
+1. Gérer la connexion au client Supabase.
+2. Fournir le client aux repositories et services.
 """
 
 import os
@@ -34,9 +25,9 @@ key: str = os.getenv("SUPABASE_KEY")
 
 # 4. Vérification de sécurité
 if not url or not key:
-    raise ValueError(f"❌ Erreur : Variables introuvables dans {ENV_PATH}")
+    raise ValueError(f"❌ Erreur : Variables SUPABASE_URL et SUPABASE_KEY introuvables dans {ENV_PATH}")
 
 # 5. Création du client unique pour le projet
 supabase: Client = create_client(url, key)
 
-print("✅ Connexion à la base de données configurée via variables d'environnement.")
+print("✅ Connexion à Supabase configurée.")

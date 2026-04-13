@@ -1,21 +1,45 @@
-"""
-FICHIER : experience_schema.py
-OBJECTIF : Modèles Pydantic pour valider les données entrantes/sortantes des Expériences.
-CE QU'IL FAUT FAIRE ICI :
-1. Ajouter des validateurs stricts (ex: longueur minimale du contenu).
-2. Créer `ExperienceUpdate` pour la modification des posts.
-"""
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Optional
 
-"""
-1. Objectif : Valider les données entrantes/sortantes des requêtes HTTP.
-2. Contenu prévu : Classes Pydantic (ExperienceCreate, ExperienceResponse).
-3. Responsable : Backend.
-4. Interactions : Utilisé par les routes.
-5. Checklist :
-   - [ ] Créer ExperienceCreate (titre, texte, tags)
-"""
 
-from pydantic import BaseModel
+class ExperienceCreate(BaseModel):
+    titre: str = Field(..., min_length=3, max_length=255)
+    contenu: str = Field(..., min_length=10)
+    tags: Optional[str] = None
+    domaine_activite: Optional[str] = None
 
-# class ExperienceBase(BaseModel):
-#     pass
+
+class ExperienceUpdate(BaseModel):
+    titre: Optional[str] = Field(None, min_length=3, max_length=255)
+    contenu: Optional[str] = Field(None, min_length=10)
+    tags: Optional[str] = None
+    domaine_activite: Optional[str] = None
+
+
+class ExperienceResponse(BaseModel):
+    id: int
+    utilisateur_id: int
+    titre: str
+    contenu: str
+    tags: Optional[str] = None
+    domaine_activite: Optional[str] = None
+    sentiment: Optional[str] = None
+    score_qualite: float
+    date_creation: datetime
+    date_modification: datetime
+
+
+class ExperienceListResponse(BaseModel):
+    id: int
+    utilisateur_id: int
+    titre: str
+    contenu: str
+    tags: Optional[str] = None
+    sentiment: Optional[str] = None
+    score_qualite: float
+    date_creation: datetime
+
+    @property
+    def preview(self) -> str:
+        return self.contenu[:200] if len(self.contenu) > 200 else self.contenu
