@@ -2,8 +2,6 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import experiences_api
-from app.auth import UserRegister, register_new_user, UserLogin, login_user
 from app.auth import UserRegister, register_new_user, UserLogin, login_user 
 from app.ai.analytics import router as ai_router 
 
@@ -25,9 +23,6 @@ app.add_middleware(
 
 # Inclure le routeur IA
 app.include_router(ai_router, prefix="/api")
-
-# Inclure les routeurs
-app.include_router(experiences_api.router)
 
 
 @app.get("/")
