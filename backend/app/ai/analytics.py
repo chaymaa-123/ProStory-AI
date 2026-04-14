@@ -221,7 +221,7 @@ def create_empty_insights(company_id: str) -> Dict[str, Any]:
     }
 
 # Middleware pour le logging des requêtes
-@router.middleware("http")
+# @router.middleware("http")
 async def log_requests(request, call_next):
     """Log toutes les requêtes pour monitoring"""
     logger.info(f"Requête IA: {request.method} {request.url}")

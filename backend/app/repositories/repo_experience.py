@@ -4,13 +4,11 @@ from ..schemas.experience_schema import ExperienceCreate, ExperienceUpdate
 
 
 class RepositoryExperience:
-    """Repository pour les opérations DB des expériences via Supabase"""
 
     TABLE_NAME = "experiences"
 
     @staticmethod
     def creer_experience(experience_data: ExperienceCreate, utilisateur_id: int) -> Dict[str, Any]:
-        """Crée une nouvelle expérience"""
         data = {
             "utilisateur_id": utilisateur_id,
             "titre": experience_data.titre,
@@ -25,7 +23,7 @@ class RepositoryExperience:
 
     @staticmethod
     def obtenir_par_id(experience_id: int) -> Optional[Dict[str, Any]]:
-        """Récupère une expérience par ID"""
+
         response = supabase.table(RepositoryExperience.TABLE_NAME).select("*").eq("id", experience_id).execute()
         if response.data:
             return response.data[0]
@@ -33,7 +31,6 @@ class RepositoryExperience:
 
     @staticmethod
     def obtenir_par_utilisateur(utilisateur_id: int, skip: int = 0, limit: int = 10) -> List[Dict[str, Any]]:
-        """Récupère les expériences d'un utilisateur"""
         response = (
             supabase.table(RepositoryExperience.TABLE_NAME)
             .select("*")

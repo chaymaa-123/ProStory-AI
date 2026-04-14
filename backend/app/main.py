@@ -1,8 +1,9 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.auth import UserRegister, register_new_user, UserLogin, login_user 
+from .routes import experiences_api
 from app.ai.analytics import router as ai_router 
+from app.auth import UserRegister, register_new_user, UserLogin, login_user
 
 # Initialiser FastAPI
 app = FastAPI(
@@ -20,9 +21,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Inclure le routeur IA
+# Inclure les routeurs
+app.include_router(experiences_api.router)
 app.include_router(ai_router, prefix="/api")
-
 
 @app.get("/")
 def read_root():
