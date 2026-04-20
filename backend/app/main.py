@@ -1,9 +1,13 @@
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import experiences_api
+from app.routes import experiences_api
 from app.ai.analytics import router as ai_router 
-from app.auth import UserRegister, register_new_user, UserLogin, login_user
+from app.auth import (
+    UserRegister, register_new_user, 
+    UserLogin, login_user, 
+    update_user_profile, ProfileUpdate, 
+    get_user_profile
+)
 
 # Initialiser FastAPI
 app = FastAPI(
@@ -41,3 +45,11 @@ async def register(user: UserRegister):
 @app.post("/auth/login")
 async def login(credentials: UserLogin):
     return login_user(credentials)
+
+@app.put("/auth/profile/update/{user_id}")
+async def update_profile(user_id: str, profile_data: ProfileUpdate):
+    return update_user_profile(user_id, profile_data)
+
+@app.get("/auth/profile/{user_id}")
+async def get_profile(user_id: str):
+    return get_user_profile(user_id)

@@ -1,6 +1,5 @@
 'use client';
 
-
 import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,36 +14,28 @@ export default function RegisterPage() {
   // --- ÉTATS ---
   const [isCompany, setIsCompany] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
+    email: '', password: '', confirmPassword: '', name: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
 
-  // --- GESTION DES INPUTS ---
+  // --- LOGIQUE ---
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // --- ENVOI AU BACKEND ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
-    try {
-      // 1. Validation de sécurité locale
-      if (formData.password !== formData.confirmPassword) {
-        throw new Error("Les mots de passe ne correspondent pas.");
-      }
+    if (formData.password !== formData.confirmPassword) {
+      return setError("Les mots de passe ne correspondent pas.");
+    }
 
-      // 2. Appel au service Register (Vers FastAPI)
+    setIsLoading(true);
+    try {
+      // Appel au service d'inscription
       await authService.register({
         name: formData.name,
         email: formData.email,
@@ -52,160 +43,86 @@ export default function RegisterPage() {
         role: isCompany ? 'entreprise' : 'user'
       });
 
-      // 3. Succès
-      alert("Compte créé avec succès !");
-      
-      // Redirection vers la page de login (ou accueil selon votre flux)
-      // Note: On utilise window.location si useRouter pose problème dans l'environnement de test
-      if (router) {
-        router.push('/auth/login'); 
-      } else {
-        window.location.href = '/auth/login';
-      }
+      // REDIRECTION : Onboarding pour les users, Dashboard pour les pros
+      router.push(isCompany ? '/dashboard' : '/formulaire');
     } catch (err: any) {
-      // On affiche l'erreur réelle renvoyée par le backend ou l'erreur locale
-      setError(err.message || "Une erreur est survenue");
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-background">
-      {/* Barre de navigation */}
+    <main className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
       <Navigation currentPath="/auth/register" />
 
       <div className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
-          <Card className="p-8 shadow-lg border-muted">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold text-foreground mb-4">
-                Créer un compte
-              </h1>
-              <p className="text-sm text-muted-foreground mb-6">
-                Rejoins ProStory-AI et commence à partager ton expérience.
-              </p>
+        <Card className="w-full max-w-md p-8 shadow-2xl border-muted/50 rounded-3xl backdrop-blur-sm bg-card/80">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-black tracking-tighter mb-2">Rejoins l'aventure</h1>
+            <p className="text-sm text-muted-foreground">Crée ton profil ProStory-AI en quelques secondes.</p>
 
-              {/* Sélecteur de type de compte (Utilisateur vs Entreprise) */}
-              <div className="flex gap-2 mb-4">
+            {/* Sélecteur de rôle (Utilisateur / Entreprise) */}
+            <div className="flex gap-3 mt-8 p-1 bg-muted/30 rounded-2xl">
+              {[
+                { id: 'user', label: 'Utilisateur', icon: Users, active: !isCompany },
+                { id: 'company', label: 'Entreprise', icon: Building2, active: isCompany }
+              ].map(role => (
                 <button
+                  key={role.id}
                   type="button"
-                  onClick={() => setIsCompany(false)}
-                  className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-medium transition-all text-sm border ${
-                    !isCompany
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-muted text-muted-foreground border-transparent hover:bg-muted/80'
+                  onClick={() => setIsCompany(role.id === 'company')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all ${
+                    role.active ? 'bg-background shadow-md text-primary scale-100' : 'text-muted-foreground hover:bg-muted/50 scale-[0.98]'
                   }`}
                 >
-                  <Users className="w-4 h-4" />
-                  Utilisateur
+                  <role.icon className="w-4 h-4" /> {role.label}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setIsCompany(true)}
-                  className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg font-medium transition-all text-sm border ${
-                    isCompany
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-muted text-muted-foreground border-transparent hover:bg-muted/80'
-                  }`}
-                >
-                  <Building2 className="w-4 h-4" />
-                  Entreprise
-                </button>
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* Affichage des erreurs (Backend ou validation) */}
-            {error && (
-              <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm text-center font-medium">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  {isCompany ? 'Nom de l\'entreprise' : 'Nom complet'}
-                </label>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder={isCompany ? 'Ex: Story Corp' : 'Ex: Jean Dupont'}
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="rounded-lg h-11"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Email professionnel
-                </label>
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder="nom@exemple.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="rounded-lg h-11"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Mot de passe
-                </label>
-                <Input
-                  type="password"
-                  name="password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="rounded-lg h-11"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Confirmer le mot de passe
-                </label>
-                <Input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="••••••••"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  className="rounded-lg h-11"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full rounded-lg h-11 mt-6 font-semibold text-white"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Traitement en cours...' : 'S\'inscrire maintenant'}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center text-sm text-muted-foreground">
-              Vous avez déjà un compte ?{' '}
-              <Link href="/auth/login" className="text-primary hover:underline font-medium">
-                Se connecter
-              </Link>
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-2xl text-xs font-bold text-center animate-in fade-in slide-in-from-top-2">
+              {error}
             </div>
+          )}
 
-            <p className="text-xs text-muted-foreground text-center mt-6 leading-relaxed">
-              En créant un compte, vous acceptez nos{' '}
-              <Link href="#" className="text-primary hover:underline">Conditions d'utilisation</Link> et notre{' '}
-              <Link href="#" className="text-primary hover:underline">Politique de confidentialité</Link>.
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Champs de saisie standard */}
+            {[
+               { name: 'name', label: isCompany ? 'Nom de la structure' : 'Ton nom complet', type: 'text', placeholder: 'Ex: Jean Story' },
+               { name: 'email', label: 'Email Pro', type: 'email', placeholder: 'nom@exemple.com' },
+               { name: 'password', label: 'Mot de passe', type: 'password', placeholder: '••••••••' },
+               { name: 'confirmPassword', label: 'Vérification', type: 'password', placeholder: '••••••••' }
+            ].map(field => (
+              <div key={field.name} className="space-y-1.5">
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">
+                  {field.label}
+                </label>
+                <Input
+                  name={field.name}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  value={(formData as any)[field.name]}
+                  onChange={handleChange}
+                  required
+                  className="rounded-xl h-12 bg-background/50 border-muted-foreground/10 focus:border-primary transition-all"
+                />
+              </div>
+            ))}
+
+            <Button type="submit" className="w-full h-12 rounded-xl font-black text-lg bg-primary hover:bg-primary/90 mt-4 transition-transform active:scale-95" disabled={isLoading}>
+              {isLoading ? 'Création...' : 'C\'est parti !'}
+            </Button>
+          </form>
+
+          <footer className="mt-8 pt-6 border-t border-muted/30 text-center">
+            <p className="text-xs text-muted-foreground">
+              Déjà un compte ? <Link href="/auth/login" className="text-primary font-black hover:underline underline-offset-4">Connecte-toi</Link>
             </p>
-          </Card>
-        </div>
+          </footer>
+        </Card>
       </div>
     </main>
   );
