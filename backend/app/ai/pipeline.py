@@ -244,7 +244,7 @@ def create_error_result(error_message: str) -> Dict[str, Any]:
         "summary": f"Erreur lors de l'analyse : {error_message}",
         "confidence": "Error",
         "trends": [],
-        "recommendations [],
+        "recommendations": [],
         "processed_experiences": 0,
         "max_experiences_limit": 30,
         "analysis_timestamp": get_timestamp(),
