@@ -1,69 +1,68 @@
 import api from '@/lib/api';
 
 /**
- * Service authService
- * Centralise tous les appels API liés à la gestion des utilisateurs.
+ * Service authService : Centralise la logique d'authentification.
+ * Gère les jetons (tokens) et les données utilisateur en local.
  */
 export const authService = {
   
   /**
-   * Inscription (Register)
-   * Envoie les données (nom, email, password, role) au backend.
+   * INCRIPTION : Envoie les données et stocke la session si succès (auto-login).
    */
   register: async (userData: any) => {
     try {
-      // On utilise l'instance 'api' configurée dans lib/api.ts
       const response = await api.post('/auth/register', userData);
+      
+      // Si le backend renvoie un token, on connecte l'utilisateur immédiatement
+      if (response.data.access_token) {
+        authService.setSession(response.data.access_token, response.data.user);
+      }
+      
       return response.data;
     } catch (error: any) {
-      // On extrait le message d'erreur précis envoyé par FastAPI (ex: "Email déjà utilisé")
-      const errorMessage = error.response?.data?.detail || "Une erreur est survenue lors de l'inscription";
-      throw new Error(errorMessage);
+      throw new Error(error.response?.data?.detail || "Erreur lors de l'inscription");
     }
   },
 
   /**
-   * Connexion (Login)
-   * Récupère le Token JWT et le stocke localement pour maintenir la session.
+   * CONNEXION : Valide les identifiants et stocke la session.
    */
   login: async (credentials: any) => {
     try {
       const response = await api.post('/auth/login', credentials);
       
-      // Si la connexion réussit, on reçoit un access_token
       if (response.data.access_token) {
-        // On enregistre le Token dans le localStorage du navigateur
-        localStorage.setItem('token', response.data.access_token);
-        
-        // On enregistre aussi les infos de base (nom, rôle) pour l'affichage
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        authService.setSession(response.data.access_token, response.data.user);
       }
       
       return response.data;
     } catch (error: any) {
-      // Message d'erreur personnalisé pour le login
-      const errorMessage = error.response?.data?.detail || "Identifiants incorrects";
-      throw new Error(errorMessage);
+      throw new Error(error.response?.data?.detail || "Identifiants incorrects");
     }
   },
 
-//   /**
-//    * Déconnexion (Logout)
-//    * Nettoie les données de session et redirige.
-//    */
-//   logout: () => {
-//     localStorage.removeItem('token');
-//     localStorage.removeItem('user');
-//     // On force le rafraîchissement vers la page de login
-//     window.location.href = '/auth';
-//   },
+  /**
+   * UTILITAIRE : Enregistre le token et l'utilisateur dans le stockage local.
+   */
+  setSession: (token: string, user: any) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+  },
 
   /**
-   * Récupérer l'utilisateur actuel
-   * Utilitaire pour savoir qui est connecté.
+   * RÉCUPÉRATION : Retourne l'utilisateur actuellement stocké.
    */
   getCurrentUser: () => {
+    if (typeof window === 'undefined') return null;
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  },
+
+  /**
+   * DÉCONNEXION : Nettoie tout et redirige.
+   */
+  logout: () => {
+    localStorage.clear();
+    window.location.href = '/auth/login';
   }
 };
