@@ -17,9 +17,9 @@ keybert
 openai
 numpy
 
-# HTTP Client
-# Garder non figé pour compatibilité avec supabase==2.3.0 (httpx<0.25)
-httpx>=0.24,<0.25
+# HTTP Client (versions compatibles avec Python 3.14 ET Supabase)
+httpx==0.24.1
+httpcore==0.17.3
 
 # Auth et Sécurité
 python-jose[cryptography]
