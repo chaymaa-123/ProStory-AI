@@ -1,10 +1,11 @@
-# ProStory-AI - Configuration PostgreSQL locale avec pgvector
-# Utilisé pour le développement local si vous préférez une DB locale à Supabase
+# ProStory-AI - Configuration Docker Compose
+# Cette configuration utilise uniquement le Backend et le Frontend.
+# La base de données est gérée directement sur Supabase.
 
 services:
   # Backend ProStory-AI avec modèles IA
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: prostory-backend-ia
@@ -18,71 +19,33 @@ services:
     environment:
       - PYTHONPATH=/app
       - ENVIRONMENT=development
-      # Variables Supabase (à adapter)
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
     restart: unless-stopped
-    # Options supplémentaires pour le développement
     stdin_open: true
     tty: true
-    depends_on:
-      - db
 
-  # Frontend ProStory-AI (React)
+  # Frontend ProStory-AI
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
     container_name: prostory-frontend
     ports:
       - "3000:3000"
     volumes:
-      # Pour le développement (rechargement automatique)
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     environment:
       - NODE_ENV=development
-      # Variables Supabase (à adapter)
-      - VITE_SUPABASE_URL=${SUPABASE_URL}
-      - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
     restart: unless-stopped
-    depends_on:
-      - backend
-    # Pour le développement avec rechargement automatique
-    command: npm run dev -- --host 0.0.0.0
-
-  # Base de données PostgreSQL locale avec pgvector
-  db:
-    image: pgvector/pgvector:pg16
-    container_name: prostory-db
-    environment:
-      POSTGRES_DB: prostory
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      # Scripts d'initialisation
-      - ./backend/scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
-    restart: unless-stopped
-
-  postgres:
-    image: pgvector/pgvector:pg16
-    container_name: prostory-postgres
-    environment:
-      POSTGRES_DB: prostory_ai
-      POSTGRES_USER: prostory_user
-      POSTGRES_PASSWORD: prostory_password
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./base_de_donnees/init.sql:/docker-entrypoint-initdb.d/init.sql
-    restart: unless-stopped
+    command: npm run dev -- -H 0.0.0.0
 
 volumes:
   model_cache:
-    driver: local
-  postgres_data:
     driver: local

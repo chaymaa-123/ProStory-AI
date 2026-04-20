@@ -1,26 +1,23 @@
-# Dockerfile pour ProStory-AI Frontend (React + Vite)
-FROM node:18-alpine
-
-# Définir le répertoire de travail
+# Dockerfile pour ProStory-AI Frontend
+# Étape 1 : Base des dépendances
+FROM node:20-alpine AS base
 WORKDIR /app
-
-# Copier les fichiers de dépendances
 COPY package*.json ./
-
-# Installer les dépendances
-RUN npm ci --only=production
-
-# Copier le code source
+RUN npm ci
 COPY . .
 
-# Construire l'application
+# Étape 2 : Développement (serveur de dev Next.js)
+FROM base AS development
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
+# Étape 3 : Build pour la production
+FROM base AS builder
 RUN npm run build
 
-# Utiliser nginx pour servir les fichiers statiques en production
-FROM nginx:alpine
-COPY --from=0 /app/dist /usr/share/nginx/html
+# Étape 4 : Serveur de production (Nginx)
+FROM nginx:alpine AS production
+COPY --from=builder /app/out /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
-
 EXPOSE 3000
-
 CMD ["nginx", "-g", "daemon off;"]

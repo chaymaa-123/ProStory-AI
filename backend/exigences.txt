@@ -6,7 +6,7 @@ fastapi
 uvicorn[standard]
 
 # Database - Supabase (PostgreSQL)
-supabase==2.3.0
+supabase
 psycopg2-binary
 
 # IA et Embeddings
@@ -17,9 +17,9 @@ keybert
 openai
 numpy
 
-# HTTP Client (versions compatibles avec Python 3.14 ET Supabase)
-httpx==0.24.1
-httpcore==0.17.3
+# HTTP Client (Laissez pip gérer les versions compatibles)
+httpx
+httpcore
 
 # Auth et Sécurité
 python-jose[cryptography]
@@ -30,6 +30,8 @@ python-multipart
 # Utils
 python-dotenv
 pydantic
+pydantic[email]
+email-validator
 pydantic-settings
 
 # Pour le développement local avec PostgreSQL direct (optionnel)
