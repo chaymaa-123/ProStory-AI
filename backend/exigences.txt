@@ -11,11 +11,19 @@ psycopg2-binary
 
 # IA et Embeddings
 sentence-transformers
+transformers
+torch
+keybert
 openai
 numpy
 
+# HTTP Client
+# Garder non figé pour compatibilité avec supabase==2.3.0 (httpx<0.25)
+httpx>=0.24,<0.25
+
 # Auth et Sécurité
 python-jose[cryptography]
+PyJWT
 passlib[bcrypt]
 python-multipart
 
