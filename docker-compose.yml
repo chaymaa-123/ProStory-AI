@@ -1,8 +1,72 @@
 # ProStory-AI - Configuration PostgreSQL locale avec pgvector
 # Utilisé pour le développement local si vous préférez une DB locale à Supabase
 
-version: '3.8'
 services:
+  # Backend ProStory-AI avec modèles IA
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prostory-backend-ia
+    ports:
+      - "8000:8000"
+    volumes:
+      # Monter le code source pour le rechargement automatique
+      - ./backend:/app
+      # Monter le cache des modèles pour éviter de les retélécharger
+      - model_cache:/root/.cache/huggingface
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+      # Variables Supabase (à adapter)
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    restart: unless-stopped
+    # Options supplémentaires pour le développement
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+
+  # Frontend ProStory-AI (React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prostory-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      # Pour le développement (rechargement automatique)
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      # Variables Supabase (à adapter)
+      - VITE_SUPABASE_URL=${SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    # Pour le développement avec rechargement automatique
+    command: npm run dev -- --host 0.0.0.0
+
+  # Base de données PostgreSQL locale avec pgvector
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: prostory-db
+    environment:
+      POSTGRES_DB: prostory
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Scripts d'initialisation
+      - ./backend/scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
   postgres:
     image: pgvector/pgvector:pg16
     container_name: prostory-postgres
@@ -18,4 +82,7 @@ services:
     restart: unless-stopped
 
 volumes:
+  model_cache:
+    driver: local
   postgres_data:
+    driver: local

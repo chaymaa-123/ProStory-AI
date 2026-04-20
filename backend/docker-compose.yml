@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Backend ProStory-AI avec modèles IA
+  backend:
+    build: .
+    container_name: prostory-backend-ia
+    ports:
+      - "8000:8000"
+    volumes:
+      # Monter le code source pour le rechargement automatique
+      - .:/app
+      # Monter le cache des modèles pour éviter de les retélécharger
+      - model_cache:/root/.cache/huggingface
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+    restart: unless-stopped
+    # Options supplémentaires pour le développement
+    stdin_open: true
+    tty: true
+
+  # Optionnel: Base de données PostgreSQL locale
+  # db:
+  #   image: pgvector/pgvector:pg16
+  #   container_name: prostory-db
+  #   environment:
+  #     POSTGRES_DB: prostory
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+volumes:
+  model_cache:
+    driver: local
+  # postgres_data:
+  #   driver: local
