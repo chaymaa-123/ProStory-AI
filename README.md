@@ -64,6 +64,7 @@ Avant de commencer, votre machine doit avoir :
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/) (Version 18+ recommandée)
 - [Python](https://www.python.org/downloads/) (Version 3.10+ recommandée)
+- [Docker](https://www.docker.com/products/docker-desktop/) (Optionnel - pour développement local avec PostgreSQL)
 - Compte [Supabase](https://supabase.com/) (gratuit)
 
 ---
@@ -77,7 +78,27 @@ git clone <URL_DU_DEPOT_GITHUB>
 cd prostory-ai
 ```
 
-### 2. Configuration Supabase
+### 2. Option A : Docker (Développement Local) 🐳
+
+**Pour utiliser PostgreSQL + pgvector localement avec Docker :**
+
+1. **Lancez Docker Compose** :
+   ```bash
+   docker-compose up -d
+   ```
+   Cela démarre PostgreSQL avec pgvector sur `localhost:5432`
+
+2. **Vérifiez que tout fonctionne** :
+   ```bash
+   docker-compose ps
+   ```
+
+3. **Arrêtez les conteneurs** (quand vous avez fini) :
+   ```bash
+   docker-compose down
+   ```
+
+### 2. Option B : Supabase (Cloud) ☁️
 
 1. **Créez un projet Supabase** : [supabase.com/dashboard](https://supabase.com/dashboard)
 2. **Activez pgvector** dans votre projet Supabase :
@@ -87,7 +108,7 @@ cd prostory-ai
    - Project URL (Settings > API)
    - anon key et service_role key
 
-### 3. Configuration du Backend (Python / FastAPI)
+### 4. Configuration du Backend (Python / FastAPI)
 
 1. **Allez dans le dossier backend** :
    ```bash
@@ -110,7 +131,7 @@ cd prostory-ai
 
 5. **Configurez les variables d'environnement** :
    - Copiez `.env.example` vers `.env`
-   - Remplissez vos clés Supabase
+   - Remplissez vos clés Supabase (ou utilisez `localhost:5432` si vous utilisez Docker)
 
 6. **Démarrez le serveur Backend** :
    ```bash
@@ -120,7 +141,7 @@ cd prostory-ai
 
 ---
 
-### 4. Configuration du Frontend (React)
+### 5. Configuration du Frontend (React)
 
 1. **Ouvrez un NOUVEAU terminal** et allez dans le frontend :
    ```bash
@@ -147,12 +168,14 @@ cd prostory-ai
 ## 🛠 Guide de Survie Quotidien
 
 **Pour commencer à travailler chaque jour :**
-1. Activer l'environnement Python et lancer `uvicorn`
-2. Lancer `npm run dev` dans le frontend
+1. **Si vous utilisez Docker** : `docker-compose up -d` (une seule fois)
+2. Activer l'environnement Python et lancer `uvicorn`
+3. Lancer `npm run dev` dans le frontend
 
 **Si ça plante après un `git pull` :**
 - Refaites `npm install` ou `pip install -r requirements.txt`
 - Vérifiez les variables d'environnement
+- Redémarrez Docker : `docker-compose down && docker-compose up -d`
 
 **Workflow par feature :**
 1. Créez une branche : `git checkout -b feature/nom-de-la-feature`
@@ -182,6 +205,7 @@ ProStory-AI/
 │   │   ├── services/       # Appels API
 │   │   └── utils/          # Utilitaires
 │   └── package.json
+├── docker-compose.yml      # Configuration Docker (PostgreSQL + pgvector)
 └── README.md
 ```
 
