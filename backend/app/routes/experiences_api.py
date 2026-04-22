@@ -6,7 +6,7 @@ from uuid import UUID
 from ..services.service_experience import ServiceExperience
 from ..schemas.experience_schema import ExperienceCreate, ExperienceUpdate, ExperienceResponse, ExperienceListResponse
 
-router = APIRouter(prefix="/api/experiences", tags=["experiences"])
+router = APIRouter(prefix="/api/experience", tags=["experiences"])
 
 
 @router.post("/", response_model=ExperienceResponse, status_code=status.HTTP_201_CREATED)

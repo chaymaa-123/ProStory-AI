@@ -24,12 +24,12 @@ api.interceptors.request.use((config) => {
 
 // Experience API functions
 export const experienceApi = {
-  create: (data: any) => api.post('/experiences', data),
-  getById: (id: string) => api.get(`/experiences/${id}`),
-  update: (id: string, data: any) => api.put(`/experiences/${id}`, data),
-  delete: (id: string) => api.delete(`/experiences/${id}`),
-  listMy: (params?: { skip?: number; limit?: number }) => api.get('/experiences/mes-experiences', { params }),
-  feed: (params?: { skip?: number; limit?: number }) => api.get('/experiences/feed', { params }),
+  create: (data: any) => api.post('/experience', data),
+  getById: (id: string) => api.get(`/experience/${id}`),
+  update: (id: string, data: any) => api.put(`/experience/${id}`, data),
+  delete: (id: string) => api.delete(`/experience/${id}`),
+  listMy: (params?: { skip?: number; limit?: number }) => api.get('/experience/mes-experiences', { params }),
+  feed: (params?: { skip?: number; limit?: number }) => api.get('/experience/feed', { params }),
 }
 
 export default api

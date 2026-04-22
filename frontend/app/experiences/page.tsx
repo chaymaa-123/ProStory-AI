@@ -12,8 +12,8 @@ import { api } from '@/lib/api'
 
 interface Experience {
   id: string
-  titre: string
-  contenu: string
+  title: string
+  content: string
   tags: string[]
   score_qualite: number
   date_creation: string
@@ -34,13 +34,13 @@ export default function ExperiencesPage() {
     try {
       const userId = localStorage.getItem('user_id')
       if (!userId) throw new Error('User not logged in')
-      const response = await api.get('/api/experiences/mes-experiences', {
+      const response = await api.get('/api/experience/mes-experiences', {
         headers: { 'x_user_id': userId }
       })
       setExperiences(response.data.map((exp: any) => ({
         ...exp,
-        preview: exp.contenu.slice(0, 200),
-        tags: exp.tags ? exp.tags.split(',') : []
+        preview: exp.content.slice(0, 200),
+        tags: exp.tags || []
       })))
     } catch (error) {
       console.error('Failed to fetch experiences', error)
@@ -50,8 +50,8 @@ export default function ExperiencesPage() {
   }
 
   const filteredExperiences = experiences.filter(exp =>
-    exp.titre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    exp.contenu.toLowerCase().includes(searchQuery.toLowerCase())
+    exp.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    exp.content.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   if (loading) return <div>Loading...</div>
@@ -99,7 +99,7 @@ export default function ExperiencesPage() {
                 <Link key={exp.id} href={`/experiences/${exp.id}`} className="block">
                   <ExperienceCard
                     id={exp.id}
-                    title={exp.titre}
+                    title={exp.title}
                     preview={exp.preview}
                     author={{ name: 'Vous' }}
                     tags={exp.tags}

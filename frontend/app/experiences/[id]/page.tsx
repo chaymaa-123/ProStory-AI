@@ -12,14 +12,14 @@ import Link from 'next/link'
 
 interface Experience {
   id: string
-  titre: string
-  contenu: string
+  title: string
+  content: string
   tags: string[]
-  domaine_activite: string
+  category: string
   score_qualite: number
   sentiment?: string
   date_creation: string
-  utilisateur_id: number
+  utilisateur_id: string
 }
 
 export default function ExperienceDetailPage() {
@@ -38,14 +38,14 @@ export default function ExperienceDetailPage() {
 
   const fetchExperience = async (id: string) => {
     try {
-      const response = await api.get(`/api/experiences/${id}`)
+      const response = await api.get(`/api/experience/${id}`)
       const data = response.data
       setExperience({
         ...data,
-        tags: data.tags ? data.tags.split(',') : []
+        tags: data.tags || []
       })
       if (userId) {
-        setIsOwner(parseInt(userId) === data.utilisateur_id)
+        setIsOwner(userId === data.user_id)
       }
     } catch (error) {
       console.error('Failed to fetch experience', error)
@@ -58,7 +58,7 @@ export default function ExperienceDetailPage() {
     if (!experience) return
     if (!confirm('Supprimer cette expérience ?')) return
     try {
-      await api.delete(`/api/experiences/${experience.id}`, {
+      await api.delete(`/api/experience/${experience.id}`, {
         headers: { 'x_user_id': userId }
       })
       router.back()
@@ -82,9 +82,9 @@ export default function ExperienceDetailPage() {
         <Card className="p-8">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">{experience.titre}</h1>
-              {experience.domaine_activite && (
-                <Badge>{experience.domaine_activite}</Badge>
+              <h1 className="text-3xl font-bold mb-2">{experience.title}</h1>
+              {experience.category && (
+                <Badge>{experience.category}</Badge>
               )}
             </div>
             {isOwner && (
@@ -104,7 +104,7 @@ export default function ExperienceDetailPage() {
           </div>
 
           <div className="prose max-w-none mb-8">
-            <div dangerouslySetInnerHTML={{ __html: experience.contenu }} />
+            <div dangerouslySetInnerHTML={{ __html: experience.content }} />
           </div>
 
           {experience.tags && experience.tags.length > 0 && (

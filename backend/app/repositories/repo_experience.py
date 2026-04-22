@@ -15,6 +15,8 @@ class RepositoryExperience:
             "title": experience_data.title,
             "content": experience_data.content,
             "category": experience_data.category,
+            "company_id": experience_data.company_id,
+            "event_id": experience_data.event_id,
         }
         response = supabase.table(RepositoryExperience.EXPERIENCES_TABLE).insert(experience_data_dict).execute()
         if not response.data:
@@ -97,6 +99,10 @@ class RepositoryExperience:
             update_data["content"] = experience_data.content
         if experience_data.category is not None:
             update_data["category"] = experience_data.category
+        if experience_data.company_id is not None:
+            update_data["company_id"] = experience_data.company_id
+        if experience_data.event_id is not None:
+            update_data["event_id"] = experience_data.event_id
 
         if not update_data:
             return RepositoryExperience.obtenir_par_id(experience_id)

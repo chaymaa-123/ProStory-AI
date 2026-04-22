@@ -12,20 +12,24 @@ import { RichTextEditor } from '@/components/RichTextEditor'
 import { api } from '@/lib/api'
 
 interface ExperienceFormData {
-  titre: string
-  contenu: string
+  title: string
+  content: string
   tags: string[]
-  domaine_activite: string
+  category: string
+  company_id: string
+  event_id: string
 }
 
 export default function EditExperiencePage() {
   const params = useParams()
   const router = useRouter()
   const [formData, setFormData] = useState<ExperienceFormData>({
-    titre: '',
-    contenu: '',
+    title: '',
+    content: '',
     tags: [],
-  domaine_activite: ''
+    category: '',
+    company_id: '',
+    event_id: ''
   })
   const [loading, setLoading] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
@@ -39,16 +43,18 @@ export default function EditExperiencePage() {
 
   const fetchExperience = async (id: string) => {
     try {
-      const response = await api.get(`/api/experiences/${id}`)
+      const response = await api.get(`/api/experience/${id}`)
       const data = response.data
       setFormData({
-        titre: data.titre,
-        contenu: data.contenu,
-        tags: data.tags ? data.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],
-        domaine_activite: data.domaine_activite || ''
+        title: data.title,
+        content: data.content,
+        tags: data.tags || [],
+        category: data.category || '',
+        company_id: data.company_id || '',
+        event_id: data.event_id || ''
       })
       if (userId) {
-        setIsOwner(parseInt(userId) === data.utilisateur_id)
+        setIsOwner(userId === data.user_id)
       }
     } catch (error) {
       console.error('Fetch failed', error)
@@ -60,11 +66,13 @@ export default function EditExperiencePage() {
     if (!params.id || !isOwner) return
     setLoading(true)
     try {
-      await api.put(`/api/experiences/${params.id}`, {
-        titre: formData.titre,
-        contenu: formData.contenu,
-        tags: formData.tags.join(', '),
-        domaine_activite: formData.domaine_activite
+      await api.put(`/api/experience/${params.id}`, {
+        title: formData.title,
+        content: formData.content,
+        tags: formData.tags,
+        category: formData.category,
+        company_id: formData.company_id || null,
+        event_id: formData.event_id || null
       }, {
         headers: { 'x_user_id': userId }
       })
@@ -92,19 +100,19 @@ export default function EditExperiencePage() {
           <h1 className="text-3xl font-bold mb-8">Modifier Expérience</h1>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="titre">Titre</Label>
+              <Label htmlFor="title">Titre</Label>
               <Input
-                id="titre"
-                value={formData.titre}
-                onChange={(e) => setFormData({...formData, titre: e.target.value})}
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
               />
             </div>
 
             <div>
-              <Label htmlFor="contenu">Contenu</Label>
+              <Label htmlFor="content">Contenu</Label>
               <RichTextEditor
-                value={formData.contenu}
-                onChange={(value) => setFormData({...formData, contenu: value})}
+                value={formData.content}
+                onChange={(value) => setFormData({...formData, content: value})}
               />
             </div>
 
@@ -117,11 +125,31 @@ export default function EditExperiencePage() {
             </div>
 
             <div>
-              <Label htmlFor="domaine">Domaine</Label>
+              <Label htmlFor="category">Catégorie</Label>
               <Input
-                id="domaine"
-                value={formData.domaine_activite}
-                onChange={(e) => setFormData({...formData, domaine_activite: e.target.value})}
+                id="category"
+                value={formData.category}
+                onChange={(e) => setFormData({...formData, category: e.target.value})}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="company_id">ID Entreprise (optionnel)</Label>
+              <Input
+                id="company_id"
+                value={formData.company_id}
+                onChange={(e) => setFormData({...formData, company_id: e.target.value})}
+                placeholder="UUID de l'entreprise"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="event_id">ID Événement (optionnel)</Label>
+              <Input
+                id="event_id"
+                value={formData.event_id}
+                onChange={(e) => setFormData({...formData, event_id: e.target.value})}
+                placeholder="UUID de l'événement"
               />
             </div>
 

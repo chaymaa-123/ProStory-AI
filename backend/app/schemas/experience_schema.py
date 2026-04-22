@@ -8,12 +8,16 @@ class ExperienceCreate(BaseModel):
     content: str = Field(..., min_length=10)
     category: Optional[str] = None
     tags: List[str] = []
+    company_id: Optional[str] = None
+    event_id: Optional[str] = None
 
 class ExperienceUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=3, max_length=255)
     content: Optional[str] = Field(None, min_length=10)
     category: Optional[str] = None
     tags: Optional[List[str]] = None
+    company_id: Optional[str] = None
+    event_id: Optional[str] = None
 
 class ExperienceResponse(BaseModel):
     id: UUID
@@ -22,6 +26,8 @@ class ExperienceResponse(BaseModel):
     content: str
     category: Optional[str] = None
     tags: List[str] = []
+    company_id: Optional[str] = None
+    event_id: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
