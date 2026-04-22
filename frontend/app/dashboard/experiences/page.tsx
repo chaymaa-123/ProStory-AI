@@ -8,7 +8,7 @@ import { Search } from 'lucide-react'
 import { useState } from 'react'
 import Link from 'next/link'
 
-// Mock experiences mentioning the company
+
 const companyExperiences = [
   {
     id: '1',

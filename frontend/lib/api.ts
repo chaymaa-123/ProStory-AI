@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -9,13 +9,28 @@ export const api = axios.create({
   },
 })
 
-// Add interceptor for auth token if needed
+// Request interceptor
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
+  const userId = localStorage.getItem('user_id')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+  if (userId) {
+    config.headers['x_user_id'] = userId
   }
   return config
 })
 
+// Experience API functions
+export const experienceApi = {
+  create: (data: any) => api.post('/experiences', data),
+  getById: (id: string) => api.get(`/experiences/${id}`),
+  update: (id: string, data: any) => api.put(`/experiences/${id}`, data),
+  delete: (id: string) => api.delete(`/experiences/${id}`),
+  listMy: (params?: { skip?: number; limit?: number }) => api.get('/experiences/mes-experiences', { params }),
+  feed: (params?: { skip?: number; limit?: number }) => api.get('/experiences/feed', { params }),
+}
+
 export default api
+
