@@ -1,45 +1,39 @@
 from pydantic import BaseModel, Field
+from typing import List, Optional
+from uuid import UUID
 from datetime import datetime
-from typing import Optional
-
 
 class ExperienceCreate(BaseModel):
-    titre: str = Field(..., min_length=3, max_length=255)
-    contenu: str = Field(..., min_length=10)
-    tags: Optional[str] = None
-    domaine_activite: Optional[str] = None
-
+    title: str = Field(..., min_length=3, max_length=255)
+    content: str = Field(..., min_length=10)
+    category: Optional[str] = None
+    tags: List[str] = []
 
 class ExperienceUpdate(BaseModel):
-    titre: Optional[str] = Field(None, min_length=3, max_length=255)
-    contenu: Optional[str] = Field(None, min_length=10)
-    tags: Optional[str] = None
-    domaine_activite: Optional[str] = None
-
+    title: Optional[str] = Field(None, min_length=3, max_length=255)
+    content: Optional[str] = Field(None, min_length=10)
+    category: Optional[str] = None
+    tags: Optional[List[str]] = None
 
 class ExperienceResponse(BaseModel):
-    id: int
-    utilisateur_id: int
-    titre: str
-    contenu: str
-    tags: Optional[str] = None
-    domaine_activite: Optional[str] = None
-    sentiment: Optional[str] = None
-    score_qualite: float
-    date_creation: datetime
-    date_modification: datetime
-
+    id: UUID
+    user_id: UUID
+    title: str
+    content: str
+    category: Optional[str] = None
+    tags: List[str] = []
+    created_at: datetime
+    updated_at: datetime
 
 class ExperienceListResponse(BaseModel):
-    id: int
-    utilisateur_id: int
-    titre: str
-    contenu: str
-    tags: Optional[str] = None
-    sentiment: Optional[str] = None
-    score_qualite: float
-    date_creation: datetime
+    id: UUID
+    user_id: UUID
+    title: str
+    content: str
+    tags: List[str] = []
+    created_at: datetime
 
     @property
     def preview(self) -> str:
-        return self.contenu[:200] if len(self.contenu) > 200 else self.contenu
+        return self.content[:200] if len(self.content) > 200 else self.content
+
