@@ -64,7 +64,7 @@ Avant de commencer, votre machine doit avoir :
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/) (Version 18+ recommandée)
 - [Python](https://www.python.org/downloads/) (Version 3.10+ recommandée)
-- [Docker](https://www.docker.com/products/docker-desktop/) (Optionnel - pour développement local avec PostgreSQL)
+- [Docker](https://www.docker.com/products/docker-desktop/) (Recommandé - pour lancer l'app complète sans dépendances)
 - Compte [Supabase](https://supabase.com/) (gratuit)
 
 ---
@@ -78,27 +78,7 @@ git clone <URL_DU_DEPOT_GITHUB>
 cd prostory-ai
 ```
 
-### 2. Option A : Docker (Développement Local) 🐳
-
-**Pour utiliser PostgreSQL + pgvector localement avec Docker :**
-
-1. **Lancez Docker Compose** :
-   ```bash
-   docker-compose up -d
-   ```
-   Cela démarre PostgreSQL avec pgvector sur `localhost:5432`
-
-2. **Vérifiez que tout fonctionne** :
-   ```bash
-   docker-compose ps
-   ```
-
-3. **Arrêtez les conteneurs** (quand vous avez fini) :
-   ```bash
-   docker-compose down
-   ```
-
-### 2. Option B : Supabase (Cloud) ☁️
+### 2. Configuration Supabase
 
 1. **Créez un projet Supabase** : [supabase.com/dashboard](https://supabase.com/dashboard)
 2. **Activez pgvector** dans votre projet Supabase :
@@ -108,7 +88,37 @@ cd prostory-ai
    - Project URL (Settings > API)
    - anon key et service_role key
 
-### 4. Configuration du Backend (Python / FastAPI)
+---
+
+### 3. Lancement avec Docker (Recommandé) 🐳
+
+**Pour lancer l'application complète sans dépendances :**
+
+1. **Configurez vos variables d'environnement** :
+   - Copiez `.env.example` vers `.env`
+   - Remplissez vos clés Supabase
+
+2. **Lancez l'application avec Docker Compose** :
+   ```bash
+   docker-compose up -d
+   ```
+   Cela démarre automatiquement :
+   - Backend FastAPI sur `http://localhost:8000`
+   - Frontend React sur `http://localhost:5173`
+
+3. **Vérifiez que tout fonctionne** :
+   ```bash
+   docker-compose ps
+   ```
+
+4. **Arrêtez l'application** (quand vous avez fini) :
+   ```bash
+   docker-compose down
+   ```
+
+---
+
+#### Backend (Python / FastAPI)
 
 1. **Allez dans le dossier backend** :
    ```bash
@@ -131,7 +141,7 @@ cd prostory-ai
 
 5. **Configurez les variables d'environnement** :
    - Copiez `.env.example` vers `.env`
-   - Remplissez vos clés Supabase (ou utilisez `localhost:5432` si vous utilisez Docker)
+   - Remplissez vos clés Supabase
 
 6. **Démarrez le serveur Backend** :
    ```bash
@@ -139,9 +149,7 @@ cd prostory-ai
    ```
    L'API est disponible sur : `http://localhost:8000`
 
----
-
-### 5. Configuration du Frontend (React)
+#### Frontend (React)
 
 1. **Ouvrez un NOUVEAU terminal** et allez dans le frontend :
    ```bash
@@ -167,10 +175,14 @@ cd prostory-ai
 
 ## 🛠 Guide de Survie Quotidien
 
-**Pour commencer à travailler chaque jour :**
-1. **Si vous utilisez Docker** : `docker-compose up -d` (une seule fois)
-2. Activer l'environnement Python et lancer `uvicorn`
-3. Lancer `npm run dev` dans le frontend
+**Pour lancer l'application rapidement (vous et vos collègues) :**
+1. Configurez vos clés Supabase dans `.env`
+2. Lancez : `docker-compose up -d`
+3. Accédez à l'app sur `http://localhost:5173`
+
+**Pour développer localement :**
+1. Activer l'environnement Python et lancer `uvicorn`
+2. Lancer `npm run dev` dans le frontend
 
 **Si ça plante après un `git pull` :**
 - Refaites `npm install` ou `pip install -r requirements.txt`
@@ -179,7 +191,7 @@ cd prostory-ai
 
 **Workflow par feature :**
 1. Créez une branche : `git checkout -b feature/nom-de-la-feature`
-2. Travaillez DB + Backend + Front
+2. Travaillez Backend + Front (la DB est Supabase)
 3. Testez la feature complète
 4. Mergez et passez à la suivante
 
