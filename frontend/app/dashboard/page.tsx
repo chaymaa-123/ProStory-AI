@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { DashboardLayout } from '@/components/DashboardLayout'
 import { PerceptionScoreCard } from '@/components/PerceptionScoreCard'
@@ -7,18 +8,79 @@ import { TrendChart } from '@/components/TrendChart'
 import { AIInsightCard } from '@/components/AIInsightCard'
 import { Card } from '@/components/ui/card'
 import { TrendingUp, FileText, Eye } from 'lucide-react'
+import { api } from '@/lib/api'
 
-// Mock data
-const trendData = [
-  { date: 'Mar 1', positive: 45, neutral: 30, negative: 12 },
-  { date: 'Mar 8', positive: 52, neutral: 28, negative: 10 },
-  { date: 'Mar 15', positive: 58, neutral: 25, negative: 8 },
-  { date: 'Mar 22', positive: 62, neutral: 22, negative: 7 },
-  { date: 'Mar 29', positive: 67, neutral: 20, negative: 6 },
-  { date: 'Apr 5', positive: 72, neutral: 18, negative: 5 },
-]
+interface CompanyInsights {
+  company_id: string
+  total_experiences: number
+  sentiment_distribution: {
+    positif: number
+    neutre: number
+    negatif: number
+  }
+  dominant_sentiment: string
+  keywords: Array<{ name: string; count: number }>
+  trend_data: Array<{ date: string; positive: number; neutral: number; negative: number }>
+  summary: string
+  confidence: string
+  updated_at: string | null
+}
 
 export default function DashboardPage() {
+  const [insights, setInsights] = useState<CompanyInsights | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [companyId] = useState('demo-company-id') // TODO: Récupérer depuis l'utilisateur connecté
+
+  useEffect(() => {
+    fetchCompanyInsights()
+  }, [])
+
+  const fetchCompanyInsights = async () => {
+    try {
+      setLoading(true)
+      const response = await api.get(`/api/company/${companyId}/insights`)
+      setInsights(response.data)
+    } catch (error) {
+      console.error('Failed to fetch company insights', error)
+      // Garder les données mock si l'API échoue
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-background">
+        <Navigation currentPath="/dashboard" />
+        <DashboardLayout currentSection="overview">
+          <div className="p-8">
+            <div className="text-center">Chargement des insights...</div>
+          </div>
+        </DashboardLayout>
+      </main>
+    )
+  }
+
+  // Utiliser les données réelles ou les données mock par défaut
+  const totalExperiences = insights?.total_experiences || 247
+  const sentimentDist = insights?.sentiment_distribution || { positif: 67.6, neutre: 23.9, negatif: 8.5 }
+  const dominantSentiment = insights?.dominant_sentiment || 'positif'
+  const summary = insights?.summary || "Your company is perceived as having a strong culture with great career growth opportunities. Employees appreciate the collaborative environment, though some mention that internal communication could be improved."
+  const trendData = insights?.trend_data || [
+    { date: 'Mar 1', positive: 45, neutral: 30, negative: 12 },
+    { date: 'Mar 8', positive: 52, neutral: 28, negative: 10 },
+    { date: 'Mar 15', positive: 58, neutral: 25, negative: 8 },
+    { date: 'Mar 22', positive: 62, neutral: 22, negative: 7 },
+    { date: 'Mar 29', positive: 67, neutral: 20, negative: 6 },
+    { date: 'Apr 5', positive: 72, neutral: 18, negative: 5 },
+  ]
+
+  // Calculer les nombres absolus pour PerceptionScoreCard
+  const total = totalExperiences
+  const positive = Math.round(total * sentimentDist.positif / 100)
+  const neutral = Math.round(total * sentimentDist.neutre / 100)
+  const negative = Math.round(total * sentimentDist.negatif / 100)
+
   return (
     <main className="min-h-screen bg-background">
       <Navigation currentPath="/dashboard" />
@@ -33,6 +95,11 @@ export default function DashboardPage() {
             <p className="text-muted-foreground">
               Track your company&apos;s perception and insights in real-time
             </p>
+            {insights?.confidence && (
+              <p className="text-sm text-muted-foreground mt-1">
+                Confiance de l&apos;analyse: {insights.confidence}
+              </p>
+            )}
           </div>
 
           {/* Quick Stats */}
@@ -43,7 +110,7 @@ export default function DashboardPage() {
                   <p className="text-sm text-muted-foreground mb-1">
                     Total Experiences
                   </p>
-                  <p className="text-3xl font-bold text-foreground">247</p>
+                  <p className="text-3xl font-bold text-foreground">{totalExperiences}</p>
                 </div>
                 <FileText className="w-10 h-10 text-accent/50" />
               </div>
@@ -65,23 +132,29 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">
-                    Positive Trend
+                    {dominantSentiment === 'positif' ? 'Positive' : dominantSentiment === 'negatif' ? 'Negative' : 'Neutral'} Trend
                   </p>
-                  <p className="text-3xl font-bold text-foreground">↑ 27%</p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {dominantSentiment === 'positif' ? '↑' : dominantSentiment === 'negatif' ? '↓' : '→'} {sentimentDist[dominantSentiment]}%
+                  </p>
                 </div>
-                <TrendingUp className="w-10 h-10 text-green-500/50" />
+                <TrendingUp className={`w-10 h-10 ${
+                  dominantSentiment === 'positif' ? 'text-green-500/50' : 
+                  dominantSentiment === 'negatif' ? 'text-red-500/50' : 
+                  'text-gray-500/50'
+                }`} />
               </div>
             </Card>
           </div>
 
           {/* AI Insight */}
-          <AIInsightCard summary="Your company is perceived as having a strong culture with great career growth opportunities. Employees appreciate the collaborative environment, though some mention that internal communication could be improved." />
+          <AIInsightCard summary={summary} />
 
           {/* Perception Score */}
           <PerceptionScoreCard
-            positive={167}
-            neutral={59}
-            negative={21}
+            positive={positive}
+            neutral={neutral}
+            negative={negative}
             title="Overall Perception Score"
           />
 
@@ -89,7 +162,7 @@ export default function DashboardPage() {
           <TrendChart data={trendData} />
 
           {/* Bottom CTA */}
-          <Card className="p-8 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 text-center space-y-4">
+          <Card className="p-8 bg-linear-to-r from-primary/10 to-accent/10 border-primary/20 text-center space-y-4">
             <h3 className="text-2xl font-bold text-foreground">
               Want deeper insights?
             </h3>
