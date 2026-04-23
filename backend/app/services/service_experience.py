@@ -1,12 +1,39 @@
 from typing import List, Optional
 from uuid import UUID
 from ..repositories.repo_experience import RepositoryExperience
+from ..repositories.repo_insight import RepositoryInsight
 from ..schemas.experience_schema import ExperienceCreate, ExperienceUpdate, ExperienceResponse, ExperienceListResponse
+from ..schemas.insight_schema import InsightCreate
+from ..recommendations import analyze_text
+import logging
+
+logger = logging.getLogger(__name__)
 
 class ServiceExperience:
     @staticmethod
     def creer_experience(experience_data: ExperienceCreate, user_id: str) -> ExperienceResponse:
+        # Création de l'expérience
         db_experience = RepositoryExperience.creer_experience(experience_data, user_id)
+        
+        # Analyse IA du contenu
+        try:
+            analysis_result = analyze_text(experience_data.content)
+            
+            # Création de l'insight
+            insight_data = InsightCreate(
+                experience_id=db_experience['id'],
+                sentiment=analysis_result['sentiment'],
+                keywords=analysis_result['keywords'],
+                score=analysis_result['confidence']
+            )
+            
+            RepositoryInsight.creer_insight(insight_data)
+            logger.info(f"Insight créé pour l'expérience {db_experience['id']}")
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la création de l'insight: {e}")
+            # On continue même si l'analyse IA échoue
+        
         return ExperienceResponse(**db_experience)
 
     @staticmethod

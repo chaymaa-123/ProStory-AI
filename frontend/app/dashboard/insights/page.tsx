@@ -1,12 +1,49 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/Navigation'
 import { DashboardLayout } from '@/components/DashboardLayout'
 import { KeyThemesCard } from '@/components/KeyThemesCard'
 import { Card } from '@/components/ui/card'
+import { api } from '@/lib/api'
+
+interface Theme {
+  name: string
+  count: number
+  trend: 'up' | 'down' | 'stable'
+}
+
+interface CompanyThemes {
+  company_id: string
+  positive_themes: Theme[]
+  negative_themes: Theme[]
+  total_themes: number
+}
 
 export default function InsightsPage() {
-  const positiveThemes = [
+  const [themes, setThemes] = useState<CompanyThemes | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [companyId] = useState('demo-company-id') // TODO: Récupérer depuis l'utilisateur connecté
+
+  useEffect(() => {
+    fetchCompanyThemes()
+  }, [])
+
+  const fetchCompanyThemes = async () => {
+    try {
+      setLoading(true)
+      const response = await api.get(`/api/company/${companyId}/themes`)
+      setThemes(response.data)
+    } catch (error) {
+      console.error('Failed to fetch company themes', error)
+      // Garder les données mock si l'API échoue
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Utiliser les données réelles ou les données mock par défaut
+  const positiveThemes = themes?.positive_themes || [
     { name: 'Company Culture', count: 47, trend: 'up' as const },
     { name: 'Career Growth', count: 42, trend: 'up' as const },
     { name: 'Team Collaboration', count: 35, trend: 'stable' as const },
@@ -14,11 +51,24 @@ export default function InsightsPage() {
     { name: 'Leadership', count: 23, trend: 'stable' as const },
   ]
 
-  const negativeThemes = [
+  const negativeThemes = themes?.negative_themes || [
     { name: 'Communication', count: 12, trend: 'down' as const },
     { name: 'Process Clarity', count: 8, trend: 'stable' as const },
     { name: 'Remote Work Limitations', count: 5, trend: 'down' as const },
   ]
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-background">
+        <Navigation currentPath="/dashboard" />
+        <DashboardLayout currentSection="insights">
+          <div className="p-8">
+            <div className="text-center">Chargement des thèmes...</div>
+          </div>
+        </DashboardLayout>
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -58,7 +108,9 @@ export default function InsightsPage() {
               <p className="text-sm text-muted-foreground mb-1">
                 Total Unique Themes
               </p>
-              <p className="text-3xl font-bold text-foreground">18</p>
+              <p className="text-3xl font-bold text-foreground">
+                {themes?.total_themes || 18}
+              </p>
             </Card>
 
             <Card className="p-6">
@@ -66,7 +118,7 @@ export default function InsightsPage() {
                 Positive Themes
               </p>
               <p className="text-3xl font-bold text-green-600 dark:text-green-400">
-                12
+                {positiveThemes.length}
               </p>
             </Card>
 
@@ -75,7 +127,7 @@ export default function InsightsPage() {
                 Negative Themes
               </p>
               <p className="text-3xl font-bold text-red-600 dark:text-red-400">
-                3
+                {negativeThemes.length}
               </p>
             </Card>
           </div>

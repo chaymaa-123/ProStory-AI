@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import experiences_api
-from app.ai.analytics import router as ai_router 
+from .routes import experiences_api
+from .routes import company_api
+from .ai import analytics as ai_analytics, router as ai_router
 from app.auth import (
     UserRegister, register_new_user, 
     UserLogin, login_user, 
@@ -27,6 +28,7 @@ app.add_middleware(
 
 # Inclure les routeurs
 app.include_router(experiences_api.router)
+app.include_router(company_api.router)
 app.include_router(ai_router, prefix="/api")
 
 @app.get("/")

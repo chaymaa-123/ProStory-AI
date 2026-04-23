@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Edit3, Trash2, ArrowLeft } from 'lucide-react'
 import { api } from '@/lib/api'
+import { ExperienceInsightCard } from '@/components/ExperienceInsightCard'
 import Link from 'next/link'
 
 interface Experience {
@@ -22,19 +23,45 @@ interface Experience {
   utilisateur_id: string
 }
 
+interface Insight {
+  experience_id: string
+  sentiment: string
+  sentiment_label: string
+  sentiment_color: string
+  keywords: string[]
+  confidence: number
+  created_at: string
+}
+
 export default function ExperienceDetailPage() {
   const params = useParams()
   const router = useRouter()
   const [experience, setExperience] = useState<Experience | null>(null)
+  const [insight, setInsight] = useState<Insight | null>(null)
   const [loading, setLoading] = useState(true)
+  const [insightLoading, setInsightLoading] = useState(true)
   const [isOwner, setIsOwner] = useState(false)
   const userId = localStorage.getItem('user_id')
 
   useEffect(() => {
     if (params.id) {
       fetchExperience(params.id as string)
+      fetchInsights(params.id as string)
     }
   }, [params.id])
+
+  const fetchInsights = async (id: string) => {
+    try {
+      setInsightLoading(true)
+      const response = await api.get(`/api/experience/${id}/insights`)
+      setInsight(response.data)
+    } catch (error) {
+      console.error('Failed to fetch insights', error)
+      // Ne pas bloquer l'affichage si les insights ne sont pas disponibles
+    } finally {
+      setInsightLoading(false)
+    }
+  }
 
   const fetchExperience = async (id: string) => {
     try {
@@ -106,6 +133,20 @@ export default function ExperienceDetailPage() {
           <div className="prose max-w-none mb-8">
             <div dangerouslySetInnerHTML={{ __html: experience.content }} />
           </div>
+
+          {/* Insights IA */}
+          {!insightLoading && insight && (
+            <div className="mb-8">
+              <ExperienceInsightCard
+                sentiment={insight.sentiment}
+                sentiment_label={insight.sentiment_label}
+                sentiment_color={insight.sentiment_color}
+                keywords={insight.keywords}
+                confidence={insight.confidence}
+                created_at={insight.created_at}
+              />
+            </div>
+          )}
 
           {experience.tags && experience.tags.length > 0 && (
             <div className="mb-6">
