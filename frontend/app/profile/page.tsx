@@ -43,7 +43,7 @@ export default function ProfilePage() {
 
   const fetchProfile = async (userId: string, token: string) => {
     try {
-      const res = await fetch(`http://localhost:8000/auth/profile/${userId}`, {
+      const res = await fetch(`http://localhost:8000/api/auth/profile/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -87,7 +87,7 @@ export default function ProfilePage() {
     setIsSaving(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`http://localhost:8000/auth/profile/update/${session.id}`, {
+      const res = await fetch(`http://localhost:8000/api/auth/profile/update/${session.id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

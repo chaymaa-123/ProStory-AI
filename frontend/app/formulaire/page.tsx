@@ -100,7 +100,7 @@ export default function PremiumOnboarding() {
             
             console.log("SENDING CLEANED PROFILE DATA:", payload);
             
-            const res = await fetch(`http://localhost:8000/auth/profile/update/${authData.userId}`, {
+            const res = await fetch(`http://localhost:8000/api/auth/profile/update/${authData.userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

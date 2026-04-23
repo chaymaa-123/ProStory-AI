@@ -14,6 +14,10 @@ SECRET_KEY = os.getenv("JWT_SECRET", "pfa_prostory_secret_2026_top_secret")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 
 
+from fastapi import APIRouter, status
+
+router = APIRouter(prefix="/auth", tags=["Authentification"])
+
 # --- MODÈLES DE DONNÉES ---
 class UserRegister(BaseModel):
     """Modèle pour l'inscription d'un nouvel utilisateur."""
@@ -64,6 +68,7 @@ def create_access_token(data: dict):
 
 # --- LOGIQUE MÉTIER ---
 
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_new_user(user_data: UserRegister):
     """
     Crée un nouvel utilisateur dans Supabase Auth.
@@ -99,6 +104,7 @@ def register_new_user(user_data: UserRegister):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/login")
 def login_user(login_data: UserLogin):
     """Vérifie les identifiants et retourne un token de session."""
     try:
@@ -121,6 +127,7 @@ def login_user(login_data: UserLogin):
     except Exception:
         raise HTTPException(status_code=401, detail="Email ou mot de passe invalide.")
 
+@router.put("/profile/update/{user_id}")
 def update_user_profile(user_id: str, profile_data: ProfileUpdate):
     """
     Met à jour ou crée le profil utilisateur (Onboarding).
@@ -146,6 +153,7 @@ def update_user_profile(user_id: str, profile_data: ProfileUpdate):
         print(f"ERROR PROFILE UPDATE: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Erreur de synchronisation : {str(e)}")
 
+@router.get("/profile/{user_id}")
 def get_user_profile(user_id: str):
     """Récupère toutes les infos du profil pour l'affichage."""
     try:
