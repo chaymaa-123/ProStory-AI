@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Heart, MessageCircle } from 'lucide-react'
+import { Heart, MessageCircle, Building2 } from 'lucide-react'
 import { useState  } from 'react'
 
 
@@ -16,6 +16,7 @@ interface ExperienceCardProps {
   }
   tags: string[]
   event?: string
+  companyName?: string
   likes: number
   comments: number
   sentiment?: 'positive' | 'neutral' | 'negative'
@@ -29,6 +30,7 @@ export function ExperienceCard({
   author,
   tags,
   event,
+  companyName,
   likes,
   comments,
   date,
@@ -51,6 +53,14 @@ export function ExperienceCard({
             {title}
           </h3>
         </div>
+
+        {/* Company name if present */}
+        {companyName && (
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium -mt-2">
+            <Building2 className="w-3.5 h-3.5" />
+            <span>{companyName}</span>
+          </div>
+        )}
 
         {/* Preview text */}
         <p className="text-sm text-muted-foreground line-clamp-2">

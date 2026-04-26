@@ -131,7 +131,7 @@ class RepositoryExperience:
     def obtenir_par_id(experience_id: str) -> Optional[Dict[str, Any]]:
         """Récupère une expérience avec toutes ses relations formatées."""
         response = supabase.table(RepositoryExperience.EXPERIENCES_TABLE)\
-            .select("*, tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name))")\
+            .select("*, author:users!experiences_user_id_fkey(name), tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name)), events:experience_event(event:events(title))")\
             .eq("id", experience_id)\
             .single()\
             .execute()
@@ -142,7 +142,7 @@ class RepositoryExperience:
     def obtenir_par_utilisateur(user_id: str, skip: int = 0, limit: int = 10) -> List[Dict[str, Any]]:
         """Récupère les expériences d'un utilisateur spécifique."""
         response = supabase.table(RepositoryExperience.EXPERIENCES_TABLE)\
-            .select("*, tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name))")\
+            .select("*, author:users!experiences_user_id_fkey(name), tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name)), events:experience_event(event:events(title))")\
             .eq("user_id", user_id)\
             .order("created_at", desc=True)\
             .range(skip, skip + limit - 1)\
@@ -153,7 +153,7 @@ class RepositoryExperience:
     def obtenir_tous(skip: int = 0, limit: int = 20) -> List[Dict[str, Any]]:
         """Récupère le flux global des expériences."""
         response = supabase.table(RepositoryExperience.EXPERIENCES_TABLE)\
-            .select("*, tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name))")\
+            .select("*, author:users!experiences_user_id_fkey(name), tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name)), events:experience_event(event:events(title))")\
             .order("created_at", desc=True)\
             .range(skip, skip + limit - 1)\
             .execute()
@@ -173,6 +173,18 @@ class RepositoryExperience:
                 exp["company_id"] = company_data.get("id")
                 exp["company_name"] = company_data.get("name")
             del exp["companies"]
+        
+        # Extraction de l'événement
+        if "events" in exp and exp["events"]:
+            event_data = exp["events"][0].get("event")
+            if event_data:
+                exp["event_name"] = event_data.get("title")
+            del exp["events"]
+        
+        # Extraction de l'auteur
+        if "author" in exp and exp["author"]:
+            exp["author_name"] = exp["author"].get("name", "Anonyme")
+            del exp["author"]
         
         return exp
 

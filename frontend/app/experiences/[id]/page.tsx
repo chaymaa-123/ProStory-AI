@@ -6,7 +6,7 @@ import { Navigation } from '@/components/Navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { Edit3, Trash2, ArrowLeft } from 'lucide-react'
+import { Edit3, Trash2, ArrowLeft, Building2 } from 'lucide-react'
 import { api } from '@/lib/api'
 import { ExperienceInsightCard } from '@/components/ExperienceInsightCard'
 import Link from 'next/link'
@@ -21,6 +21,7 @@ interface Experience {
   sentiment?: string
   date_creation: string
   utilisateur_id: string
+  company_name?: string
 }
 
 interface Insight {
@@ -110,9 +111,17 @@ export default function ExperienceDetailPage() {
           <div className="flex justify-between items-start mb-6">
             <div>
               <h1 className="text-3xl font-bold mb-2">{experience.title}</h1>
-              {experience.category && (
-                <Badge>{experience.category}</Badge>
-              )}
+              <div className="flex gap-2 items-center mb-2">
+                {experience.company_name && (
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground font-medium">
+                    <Building2 className="w-4 h-4" />
+                    <span>{experience.company_name}</span>
+                  </div>
+                )}
+                {experience.category && (
+                  <Badge variant="outline">{experience.category}</Badge>
+                )}
+              </div>
             </div>
             {isOwner && (
               <div className="flex gap-2">

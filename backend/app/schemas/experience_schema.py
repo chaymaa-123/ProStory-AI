@@ -28,7 +28,9 @@ class ExperienceResponse(BaseModel):
     tags: List[str] = []
     company_id: Optional[str] = None
     company_name: Optional[str] = None  # Ajouté pour le mapping auto
+    author_name: Optional[str] = "Anonyme"
     event_id: Optional[str] = None
+    event_name: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
@@ -40,6 +42,8 @@ class ExperienceListResponse(BaseModel):
     content: str
     tags: List[str] = []
     company_name: Optional[str] = None  # Ajouté pour le flux
+    author_name: Optional[str] = "Anonyme"
+    event_name: Optional[str] = None
     created_at: datetime
 
     @property

@@ -18,6 +18,7 @@ interface Experience {
   date_creation: string
   preview: string
   sentiment?: string
+  company_name?: string
 }
 
 export default function ExperiencesPage() {
@@ -102,6 +103,7 @@ export default function ExperiencesPage() {
                     preview={exp.preview}
                     author={{ name: 'Vous' }}
                     tags={exp.tags}
+                    companyName={exp.company_name}
                     likes={0}
                     comments={0}
                     sentiment={exp.sentiment as any}
