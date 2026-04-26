@@ -5,7 +5,7 @@ from datetime import datetime
 
 class InsightCreate(BaseModel):
     experience_id: str = Field(..., description="ID de l'expérience")
-    sentiment: str = Field(..., regex="^(positif|neutre|negatif)$")
+    sentiment: str = Field(..., pattern="^(positif|neutre|negatif)$")
     keywords: List[str] = Field(default_factory=list)
     score: float = Field(default=0.0, ge=0.0, le=1.0)
 
@@ -18,7 +18,7 @@ class InsightResponse(BaseModel):
     created_at: datetime
 
 class InsightUpdate(BaseModel):
-    sentiment: Optional[str] = Field(None, regex="^(positif|neutre|negatif)$")
+    sentiment: Optional[str] = Field(None, pattern="^(positif|neutre|negatif)$")
     keywords: Optional[List[str]] = None
     score: Optional[float] = Field(None, ge=0.0, le=1.0)
 
