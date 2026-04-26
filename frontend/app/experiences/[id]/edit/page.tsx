@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 import { TagInput } from '@/components/TagInput'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import { CompanySearch } from '@/components/CompanySearch'
 import { api } from '@/lib/api'
 
 interface ExperienceFormData {
@@ -43,7 +44,7 @@ export default function EditExperiencePage() {
 
   const fetchExperience = async (id: string) => {
     try {
-      const response = await api.get(`/api/experience/${id}`)
+      const response = await api.get(`experience/${id}`)
       const data = response.data
       setFormData({
         title: data.title,
@@ -66,20 +67,24 @@ export default function EditExperiencePage() {
     if (!params.id || !isOwner) return
     setLoading(true)
     try {
-      await api.put(`/api/experience/${params.id}`, {
-        title: formData.title,
-        content: formData.content,
+      await api.put(`experience/${params.id}`, {
+        title: formData.title.trim(),
+        content: formData.content.trim(),
         tags: formData.tags,
-        category: formData.category,
-        company_id: formData.company_id || null,
-        event_id: formData.event_id || null
+        category: formData.category.trim() || null,
+        company_id: formData.company_id.trim() || null,
+        event_id: formData.event_id.trim() || null
       }, {
         headers: { 'x_user_id': userId }
       })
       router.push(`/experiences/${params.id}`)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Update failed', error)
-      alert('Erreur modification')
+      const detail = error.response?.data?.detail
+      const errorMsg = Array.isArray(detail) 
+        ? detail.map((d: any) => `${d.loc.join('.')}: ${d.msg}`).join('\n')
+        : detail || 'Erreur lors de la modification'
+      alert(errorMsg)
     } finally {
       setLoading(false)
     }
@@ -134,12 +139,11 @@ export default function EditExperiencePage() {
             </div>
 
             <div>
-              <Label htmlFor="company_id">ID Entreprise (optionnel)</Label>
-              <Input
-                id="company_id"
+              <Label htmlFor="company_id">Entreprise (optionnel)</Label>
+              <CompanySearch
                 value={formData.company_id}
-                onChange={(e) => setFormData({...formData, company_id: e.target.value})}
-                placeholder="UUID de l'entreprise"
+                onSelect={(id) => setFormData({...formData, company_id: id})}
+                placeholder="Ex: Capgemini, Google, etc."
               />
             </div>
 

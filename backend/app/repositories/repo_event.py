@@ -122,7 +122,7 @@ class RepositoryEvent:
         """Recherche des événements par titre ou description"""
         response = supabase.table(RepositoryEvent.EVENTS_TABLE)\
             .select("*")\
-            .or(f"title.ilike.%{query}%,description.ilike.%{query}%")\
+            .or_(f"title.ilike.%{query}%,description.ilike.%{query}%")\
             .order("date", desc=True)\
             .range(skip, skip + limit - 1)\
             .execute()

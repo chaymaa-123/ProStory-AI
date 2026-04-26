@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/Navigation'
-import { DashboardLayout } from '@/components/DashboardLayout'
 import { ExperienceCard } from '@/components/ExperienceCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -34,7 +33,7 @@ export default function ExperiencesPage() {
     try {
       const userId = localStorage.getItem('user_id')
       if (!userId) throw new Error('User not logged in')
-      const response = await api.get('/api/experience/mes-experiences', {
+   const response = await api.get('/experience/mes-experiences', {
         headers: { 'x_user_id': userId }
       })
       setExperiences(response.data.map((exp: any) => ({
@@ -59,8 +58,8 @@ export default function ExperiencesPage() {
   return (
     <main className="min-h-screen bg-background">
       <Navigation />
-      <DashboardLayout currentSection="experiences">
-        <div className="p-8 max-w-4xl space-y-6">
+      
+        <div className="p-8 max-w-4xl mx-auto space-y-6">
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold">Mes Expériences</h1>
@@ -113,7 +112,7 @@ export default function ExperiencesPage() {
             )}
           </div>
         </div>
-      </DashboardLayout>
+
     </main>
   )
 }

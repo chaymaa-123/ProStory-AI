@@ -12,7 +12,19 @@ export const api = axios.create({
 // Request interceptor
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
-  const userId = localStorage.getItem('user_id')
+  let userId = localStorage.getItem('user_id')
+  
+  // Fallback si user_id n'est pas directement dans le localStorage
+  if (!userId) {
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        userId = user.id
+      } catch (e) {}
+    }
+  }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

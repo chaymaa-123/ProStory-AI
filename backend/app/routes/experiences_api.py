@@ -17,7 +17,14 @@ def creer_experience(
     user_id: str = Header(..., alias="x_user_id")
 ):
     """Créer une nouvelle expérience"""
-    return ServiceExperience.creer_experience(experience, user_id)
+    print(f"DEBUG: Tentative de création d'expérience pour l'USER_ID: {user_id}")
+    try:
+        return ServiceExperience.creer_experience(experience, user_id)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Erreur lors de la création : {str(e)}"
+        )
 
 
 @router.get("/feed", response_model=List[ExperienceListResponse])

@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { TagInput } from '@/components/TagInput'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import { CompanySearch } from '@/components/CompanySearch'
 import { api } from '@/lib/api'
 
 export default function CreateExperiencePage() {
@@ -26,27 +27,43 @@ export default function CreateExperiencePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validation locale
+    if (formData.title.trim().length < 3) {
+      alert('Le titre doit faire au moins 3 caractères')
+      return
+    }
+    if (formData.content.trim().length < 10) {
+      alert('Le contenu doit faire au moins 10 caractères')
+      return
+    }
+
     setLoading(true)
     try {
       const userId = localStorage.getItem('user_id')
       if (!userId) throw new Error('Utilisateur non connecté')
 
       const payload = {
-        title: formData.title,
-        content: formData.content,
+        title: formData.title.trim(),
+        content: formData.content.trim(),
         tags: formData.tags,
-        category: formData.category,
-        company_id: formData.company_id || null,
-        event_id: formData.event_id || null
+        category: formData.category.trim() || null,
+        company_id: formData.company_id.trim() || null,
+        event_id: formData.event_id.trim() || null
       }
 
-      await api.post('/api/experience', payload, {
+      // Utilisation du chemin exact avec slash final car le backend utilise @router.post("/")
+      await api.post('experience/', payload, {
         headers: { 'x_user_id': userId }
       })
       router.push('/experiences')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur création', error)
-      alert('Erreur lors de la création')
+      const detail = error.response?.data?.detail
+      const errorMsg = Array.isArray(detail) 
+        ? detail.map((d: any) => `${d.loc.join('.')}: ${d.msg}`).join('\n')
+        : detail || 'Erreur lors de la création'
+      alert(errorMsg)
     } finally {
       setLoading(false)
     }
@@ -102,12 +119,11 @@ export default function CreateExperiencePage() {
             </div>
 
             <div>
-              <Label htmlFor="company_id">ID Entreprise (optionnel)</Label>
-              <Input
-                id="company_id"
+              <Label htmlFor="company_id">Entreprise (optionnel)</Label>
+              <CompanySearch
                 value={formData.company_id}
-                onChange={(e) => setFormData({...formData, company_id: e.target.value})}
-                placeholder="UUID de l'entreprise"
+                onSelect={(id) => setFormData({...formData, company_id: id})}
+                placeholder="Ex: Capgemini, Google, etc."
               />
             </div>
 

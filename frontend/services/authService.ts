@@ -47,6 +47,9 @@ export const authService = {
   setSession: (token: string, user: any) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
+    if (user && user.id) {
+      localStorage.setItem('user_id', user.id);
+    }
   },
 
   /**

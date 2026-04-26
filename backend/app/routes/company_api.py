@@ -1,6 +1,6 @@
 """Routes API pour les insights entreprise - Modèle économique viable"""
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
 from typing import List, Dict, Any
 from ..repositories.repo_insight import RepositoryInsight
 from ..repositories.repo_experience import RepositoryExperience
@@ -9,7 +9,21 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api/company", tags=["company-insights"])
+router = APIRouter(prefix="/api/company", tags=["entreprise-insights"])
+
+@router.get("/search")
+def search_companies(q: str = Query(..., min_length=1)):
+    """Recherche des entreprises par nom"""
+    try:
+        response = supabase.table("companies")\
+            .select("id, name")\
+            .ilike("name", f"%{q}%")\
+            .limit(10)\
+            .execute()
+        return response.data or []
+    except Exception as e:
+        logger.error(f"Erreur recherche entreprise: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la recherche")
 
 @router.get("/{company_id}/insights")
 def get_company_insights(company_id: str):

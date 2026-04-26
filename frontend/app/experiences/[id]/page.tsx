@@ -53,7 +53,7 @@ export default function ExperienceDetailPage() {
   const fetchInsights = async (id: string) => {
     try {
       setInsightLoading(true)
-      const response = await api.get(`/api/experience/${id}/insights`)
+      const response = await api.get(`experience/${id}/insights`)
       setInsight(response.data)
     } catch (error) {
       console.error('Failed to fetch insights', error)
@@ -65,7 +65,7 @@ export default function ExperienceDetailPage() {
 
   const fetchExperience = async (id: string) => {
     try {
-      const response = await api.get(`/api/experience/${id}`)
+      const response = await api.get(`experience/${id}`)
       const data = response.data
       setExperience({
         ...data,
@@ -85,7 +85,7 @@ export default function ExperienceDetailPage() {
     if (!experience) return
     if (!confirm('Supprimer cette expérience ?')) return
     try {
-      await api.delete(`/api/experience/${experience.id}`, {
+      await api.delete(`experience/${experience.id}`, {
         headers: { 'x_user_id': userId }
       })
       router.back()

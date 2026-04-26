@@ -23,7 +23,13 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
     if (savedUser) {
       try {
         const parsed = JSON.parse(savedUser)
-        if (parsed && typeof parsed === 'object') setUser(parsed)
+        if (parsed && typeof parsed === 'object') {
+          setUser(parsed)
+          // Synchroniser user_id s'il manque pour les requêtes API
+          if (!localStorage.getItem('user_id') && parsed.id) {
+            localStorage.setItem('user_id', parsed.id)
+          }
+        }
       } catch (e) {
         console.error("Erreur session", e)
       }

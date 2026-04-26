@@ -40,7 +40,8 @@ export default function RegisterPage() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: isCompany ? 'entreprise' : 'user'
+        role: isCompany ? 'entreprise' : 'user',
+        company_name: isCompany ? formData.name : null
       });
 
       // REDIRECTION : Onboarding pour les users, Dashboard pour les pros
