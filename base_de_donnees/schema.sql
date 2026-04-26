@@ -71,14 +71,26 @@ CREATE TABLE IF NOT EXISTS public.companies (
   PRIMARY KEY (id)
 );
 
--- Events table
+-- Events table (complete version)
 CREATE TABLE IF NOT EXISTS public.events (
-  id uuid NOT NULL DEFAULT uuid_generate_v4(),
-  title text NOT NULL,
-  description text,
-  date timestamp with time zone NOT NULL,
-  PRIMARY KEY (id)
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    date TIMESTAMP WITH TIME ZONE NOT NULL,
+    location VARCHAR(200) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    is_virtual BOOLEAN DEFAULT FALSE,
+    max_attendees INTEGER,
+    creator_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    company_id UUID REFERENCES public.companies(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_events_creator ON public.events(creator_id);
+CREATE INDEX IF NOT EXISTS idx_events_company ON public.events(company_id);
+CREATE INDEX IF NOT EXISTS idx_events_date ON public.events(date);
+CREATE INDEX IF NOT EXISTS idx_events_category ON public.events(category);
 
 -- Experience-Company junction
 CREATE TABLE IF NOT EXISTS public.experience_company (
@@ -122,15 +134,16 @@ CREATE TABLE IF NOT EXISTS public.likes (
 
 -- Insights table (AI analysis)
 CREATE TABLE IF NOT EXISTS public.insights (
-  id uuid NOT NULL DEFAULT uuid_generate_v4(),
-  experience_id uuid NOT NULL,
-  sentiment text CHECK (sentiment IN ('positif', 'neutre', 'negatif')),
-  keywords text[],
-  score double precision DEFAULT 0,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (experience_id) REFERENCES public.experiences(id) ON DELETE CASCADE
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  experience_id UUID NOT NULL REFERENCES public.experiences(id) ON DELETE CASCADE,
+  sentiment VARCHAR(20) NOT NULL CHECK (sentiment IN ('positif', 'neutre', 'negatif')),
+  keywords TEXT[] DEFAULT '{}',
+  score FLOAT DEFAULT 0.0 CHECK (score >= 0.0 AND score <= 1.0),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_insights_exp ON public.insights(experience_id);
 
 -- Additional indexes
 CREATE INDEX IF NOT EXISTS idx_experience_company_exp ON public.experience_company(experience_id);

@@ -37,8 +37,9 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
       ? [{ label: '', href: '/dashboard' }]
       : [
           { label: 'Feed', href: '/feed' },
-          { label: 'Expériences', href: '/events' },
-          { label: 'Profil', href: '/profile' } // À adapter vers ta page d'expériences
+          { label: 'Événements', href: '/events' },
+          { label: 'Mes Expériences', href: '/experiences' },
+          { label: 'Profil', href: '/profile' }
         ]
   ) : []
 
@@ -65,16 +66,16 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
   }
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           
           {/* LOGO */}
           <Link href="" className="flex items-center gap-2 font-semibold text-lg hover:opacity-90 transition-opacity">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
               C
             </div>
-            <span className="hidden sm:inline text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent font-bold">Connex</span>
+            <span className="hidden sm:inline text-transparent bg-clip-text bg-linear-to-r from-primary to-accent font-bold">Connex</span>
           </Link>
 
           {/* DESKTOP NAV (Visible seulement si connecté) */}

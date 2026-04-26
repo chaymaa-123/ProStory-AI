@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routes import experiences_api
 from .routes import company_api
+from .routes import events_api
 from .ai import analytics as ai_analytics, router as ai_router
 from app.auth import router as auth_router
 
@@ -25,6 +26,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api")
 app.include_router(experiences_api.router)
 app.include_router(company_api.router)
+app.include_router(events_api.router)
 app.include_router(ai_router, prefix="/api")
 
 @app.get("/")
