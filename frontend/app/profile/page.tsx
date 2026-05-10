@@ -64,7 +64,7 @@ export default function ProfilePage() {
           age: 0,
           ville: '',
           statut: '',
-          domaine_activite: '',
+          category: '',
           poste_actuel: '',
           nom_entreprise: '',
           bio: '',

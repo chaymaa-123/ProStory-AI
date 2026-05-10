@@ -53,7 +53,7 @@ Nous travaillons par fonctionnalités complètes pour une progression rapide et 
 - **Frontend** : React + TailwindCSS
 - **Backend** : FastAPI (Python)
 - **Database** : Supabase (PostgreSQL + pgvector)
-- **IA** : OpenAI Embeddings / SentenceTransformers
+- **IA** : Transformers (Multilingual Sentiment) + KeyBERT (Keywords)
 - **Auth** : Supabase Auth
 
 ---
@@ -104,7 +104,7 @@ cd prostory-ai
    ```
    Cela démarre automatiquement :
    - Backend FastAPI sur `http://localhost:8000`
-   - Frontend React sur `http://localhost:5173`
+   - Frontend Next.js sur `http://localhost:3001`
 
 3. **Vérifiez que tout fonctionne** :
    ```bash
@@ -177,8 +177,11 @@ cd prostory-ai
 
 **Pour lancer l'application rapidement (vous et vos collègues) :**
 1. Configurez vos clés Supabase dans `.env`
-2. Lancez : `docker-compose up -d`
-3. Accédez à l'app sur `http://localhost:5173`
+2. Lancez : `docker compose up -d --build`
+3. Accédez à l'app sur `http://localhost:3001`
+
+**💡 Note pour Windows :**
+Si les variables `.env` semblent ne pas être détectées dans Docker, nous utilisons désormais `env_file: .env` dans `docker-compose.yml` pour garantir la compatibilité. Assurez-vous que le fichier `.env` est à la racine du projet.
 
 **Pour développer localement :**
 1. Activer l'environnement Python et lancer `uvicorn`

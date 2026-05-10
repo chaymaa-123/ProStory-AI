@@ -22,12 +22,18 @@ key: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 if not key or key == "your-service-role-key-here":
     key = os.getenv("SUPABASE_KEY")
 
-# 4. Vérification de sécurité
-if not url or not key:
-    raise ValueError(f"❌ Erreur : Variables SUPABASE_URL et SUPABASE_KEY introuvables dans {ENV_PATH}")
+# 4. Vérification et Initialisation
+supabase: Client = None
 
-# 5. Création du client unique pour le projet
-supabase: Client = create_client(url, key)
+if not url or not key or key == "your-service-role-key-here":
+    print("⚠️  AVERTISSEMENT : Variables SUPABASE_URL ou SUPABASE_KEY manquantes.")
+    print("Le backend démarrera mais les fonctionnalités liées à la base de données seront indisponibles.")
+else:
+    try:
+        # 5. Création du client unique pour le projet
+        supabase = create_client(url, key)
+        print("✅ Connexion à Supabase configurée avec succès.")
+    except Exception as e:
+        print(f"❌ Erreur lors de l'initialisation du client Supabase : {str(e)}")
 
-
-print("✅ Connexion à Supabase configurée.")
+# Note : Dans les repositories, il faudra vérifier si 'supabase' n'est pas None avant usage.

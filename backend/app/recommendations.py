@@ -7,31 +7,29 @@ import re
 from typing import Dict, List, Any
 import logging
 
+from .ai.sentiment import analyze_sentiment
+from .ai.keywords import extract_keywords
+
 logger = logging.getLogger(__name__)
 
 def analyze_text(text: str) -> Dict[str, Any]:
     """
     Analyse un texte pour en extraire le sentiment et les mots-clés
-    
-    Args:
-        text (str): Le texte à analyser
-        
-    Returns:
-        Dict[str, Any]: {
-            "sentiment": "positif" | "neutre" | "negatif",
-            "keywords": List[str],
-            "confidence": float
-        }
+    Utilise les modèles Transformers et KeyBERT si disponibles.
     """
     try:
-        # Nettoyage du texte
-        cleaned_text = clean_text(text)
+        # 1. Analyse de sentiment via IA (Transformers)
+        sentiment_result = analyze_sentiment(text)
         
-        # Analyse de sentiment simple
-        sentiment_result = analyze_sentiment_simple(cleaned_text)
+        # 2. Extraction de mots-clés via IA (KeyBERT)
+        keywords = extract_keywords(text, top_n=8)
         
-        # Extraction de mots-clés
-        keywords = extract_keywords_simple(cleaned_text)
+        # 3. Fallback sur les méthodes simples si l'IA échoue
+        if not keywords:
+            keywords = extract_keywords_simple(text)
+            
+        if sentiment_result.get("error"):
+            sentiment_result = analyze_sentiment_simple(text)
         
         return {
             "sentiment": sentiment_result["sentiment"],
@@ -40,12 +38,21 @@ def analyze_text(text: str) -> Dict[str, Any]:
         }
         
     except Exception as e:
-        logger.error(f"Erreur lors de l'analyse du texte: {e}")
-        return {
-            "sentiment": "neutre",
-            "keywords": [],
-            "confidence": 0.0
-        }
+        logger.error(f"Erreur lors de l'analyse IA du texte: {e}")
+        # Ultime fallback sur la version simple
+        try:
+            simple_sentiment = analyze_sentiment_simple(text)
+            return {
+                "sentiment": simple_sentiment["sentiment"],
+                "keywords": extract_keywords_simple(text),
+                "confidence": simple_sentiment["confidence"]
+            }
+        except:
+            return {
+                "sentiment": "neutre",
+                "keywords": [],
+                "confidence": 0.0
+            }
 
 def clean_text(text: str) -> str:
     """

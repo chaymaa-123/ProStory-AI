@@ -19,7 +19,7 @@ except Exception as e:
     logger.error(f"Erreur lors de l'initialisation de KeyBERT: {e}")
     kw_model = None
 
-def extract_keywords(text: str, top_n: int = 5, language: str = "english") -> List[str]:
+def extract_keywords(text: str, top_n: int = 5, language: str = "multilingual") -> List[str]:
     """
     Extrait les mots-clés d'un texte donné
     

@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 
 # Initialisation du pipeline de sentiment (chargé au démarrage)
 try:
-    sentiment_pipeline = pipeline("sentiment-analysis")
-    logger.info("Pipeline de sentiment initialisé avec succès")
+    # Utilisation d'un modèle multilingue performant (Français/Anglais/etc.)
+    # Ce modèle retourne des scores de 1 à 5 étoiles
+    sentiment_pipeline = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+    logger.info("Pipeline de sentiment multilingue (nlptown) initialisé avec succès")
 except Exception as e:
     logger.error(f"Erreur lors de l'initialisation du pipeline de sentiment: {e}")
     sentiment_pipeline = None
@@ -32,34 +34,35 @@ def analyze_sentiment(text: str) -> Dict[str, Any]:
     if not sentiment_pipeline:
         logger.error("Pipeline de sentiment non disponible")
         return {
-            "sentiment": "neutral",
+            "sentiment": "neutre",
             "confidence": 0.0,
             "error": "Pipeline non initialisé"
         }
     
     if not text or not text.strip():
         return {
-            "sentiment": "neutral",
+            "sentiment": "neutre",
             "confidence": 0.0,
             "error": "Texte vide"
         }
     
     try:
         # Limiter la longueur du texte pour éviter les timeouts
-        text = text[:512]  # Limite raisonnable pour les modèles
+        text = text[:512]
         
         result = sentiment_pipeline(text)[0]
         
-        label = result["label"].lower()  # POSITIVE / NEGATIVE
+        label = result["label"].lower()  # "1 star", "2 stars", etc.
         score = result["score"]
         
-        # Normalisation des labels
-        if label in ["positive", "pos", "label_1"]:
-            sentiment = "positive"
-        elif label in ["negative", "neg", "label_0"]:
-            sentiment = "negative"
+        # Mapping des étoiles vers les labels ProStory-AI
+        # 1-2 stars = negatif, 3 stars = neutre, 4-5 stars = positif
+        if "1 star" in label or "2 stars" in label:
+            sentiment = "negatif"
+        elif "4 stars" in label or "5 stars" in label:
+            sentiment = "positif"
         else:
-            sentiment = "neutral"
+            sentiment = "neutre"
         
         return {
             "sentiment": sentiment,

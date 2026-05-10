@@ -51,7 +51,7 @@ export default function PremiumOnboarding() {
     // DONNÉES DU FORMULAIRE
     const [formData, setFormData] = useState({
         nom: '', prenom: '', age: '', ville: '',
-        statut: '', domaine_activite: '', poste_actuel: '', nom_entreprise: '',
+        statut: '', category: '', poste_actuel: '', nom_entreprise: '',
         bio: '', competences: [] as string[],
         env_travail_prefere: [] as string[],
         points_de_douleur: [] as string[],
@@ -176,7 +176,7 @@ export default function PremiumOnboarding() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                                     <PremiumInput label="Poste Actuel" value={formData.poste_actuel} icon={Briefcase} onChange={(v: string) => setFormData({ ...formData, poste_actuel: v })} placeholder="Ex: Développeur Fullstack" />
-                                    <PremiumInput label="Domaine d'activité" value={formData.domaine_activite} icon={Globe} onChange={(v: string) => setFormData({ ...formData, domaine_activite: v })} placeholder="Ex: Tech, Design, Santé..." />
+                                    <PremiumInput label="Catégorie" value={formData.category} icon={Globe} onChange={(v: string) => setFormData({ ...formData, category: v })} placeholder="Ex: Tech, Design, Santé..." />
                                     <PremiumInput label="Entreprise / École actuelle" value={formData.nom_entreprise} icon={Building2} onChange={(v: string) => setFormData({ ...formData, nom_entreprise: v })} placeholder="Ex: Google, Sorbonne..." />
                                 </div>
 
@@ -359,6 +359,6 @@ const TagCloud = ({ suggestions, selected, onSelect, onRemove, tempValue, onTemp
 // --- VALIDATION ÉTAPES ---
 const isStepReady = (step: number, data: any) => {
     if (step === 1) return data.nom && data.prenom && data.age && data.ville;
-    if (step === 2) return data.poste_actuel && data.domaine_activite && data.nom_entreprise && data.statut && data.competences.length > 0;
+    if (step === 2) return data.poste_actuel && data.category && data.nom_entreprise && data.statut && data.competences.length > 0;
     return true;
 };

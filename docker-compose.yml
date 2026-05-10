@@ -16,11 +16,12 @@ services:
       - ./backend:/app
       # Monter le cache des modèles pour éviter de les retélécharger
       - model_cache:/root/.cache/huggingface
+    env_file:
+      - .env
     environment:
       - PYTHONPATH=/app
       - ENVIRONMENT=development
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
+      - PORT=8000
     restart: unless-stopped
     stdin_open: true
     tty: true
@@ -33,16 +34,17 @@ services:
       target: development
     container_name: prostory-frontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
+    env_file:
+      - .env
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
       - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - PORT=3000
     restart: unless-stopped
     command: npm run dev -- -H 0.0.0.0
 

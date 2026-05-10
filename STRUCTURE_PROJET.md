@@ -129,7 +129,8 @@ ProStory-AI/
 ### **Backend Stack**
 - **FastAPI** : Framework API Python
 - **Supabase** : Base de données PostgreSQL + Auth
-- **OpenAI** : IA pour embeddings et recommandations
+- **Transformers (nlptown)** : IA pour l'analyse de sentiment multilingue
+- **KeyBERT** : Extraction de mots-clés contextuels
 - **pgvector** : Recherche vectorielle sémantique
 - **JWT** : Authentification sécurisée
 
@@ -165,9 +166,10 @@ ProStory-AI/
 
 ✅ **Configuration initiale** : Environnement prêt  
 ✅ **Backend** : API FastAPI + Supabase configuré  
-✅ **Frontend** : Next.js + React 19 opérationnel  
+✅ **Frontend** : Next.js + React 19 opérationnel (Port 3001)
 ✅ **Base de données** : PostgreSQL + pgvector prêt  
-🔄 **Features** : Prêt pour développement par fonctionnalités  
+✅ **IA** : Modèles multilingues et KeyBERT intégrés
+🔄 **Features** : Tests CRUD et Auth en cours
 
 ---
 
