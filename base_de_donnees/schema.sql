@@ -1,4 +1,4 @@
--- Schema Supabase for ProStory-AI Experiences
+-- Schema Supabase for Connex Experiences
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

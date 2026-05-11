@@ -1,4 +1,4 @@
-# ProStory-AI
+# Connex
 
 Plateforme de partage d'expériences professionnelles avec IA de recommandation.
 
@@ -76,7 +76,7 @@ Avant de commencer, votre machine doit avoir :
 
 ```bash
 git clone <URL_DU_DEPOT_GITHUB>
-cd prostory-ai
+cd connex
 ```
 
 ### 2. Configuration Supabase
@@ -204,7 +204,7 @@ Si les variables `.env` semblent ne pas être détectées dans Docker, nous util
 ## 📁 Structure du Projet
 
 ```
-ProStory-AI/
+Connex/
 ├── backend/                 # FastAPI
 │   ├── app/
 │   │   ├── coeur/          # Configuration Supabase & Base de données

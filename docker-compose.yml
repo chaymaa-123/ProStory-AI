@@ -1,14 +1,14 @@
-# ProStory-AI - Configuration Docker Compose
+# Connex - Configuration Docker Compose
 # Cette configuration utilise uniquement le Backend et le Frontend.
 # La base de données est gérée directement sur Supabase.
 
 services:
-  # Backend ProStory-AI avec modèles IA
+  # Backend Connex avec modèles IA
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: prostory-backend-ia
+    container_name: connex-backend-ia
     ports:
       - "8000:8000"
     volumes:
@@ -26,13 +26,13 @@ services:
     stdin_open: true
     tty: true
 
-  # Frontend ProStory-AI
+  # Frontend Connex
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: development
-    container_name: prostory-frontend
+    container_name: connex-frontend
     ports:
       - "3001:3000"
     volumes:

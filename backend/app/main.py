@@ -8,7 +8,7 @@ from app.auth import router as auth_router
 
 # Initialiser FastAPI
 app = FastAPI(
-    title="ProStory-AI API",
+    title="Connex API",
     description="API pour le partage d'expériences professionnelles",
     version="0.1.0"
 )
@@ -31,7 +31,7 @@ app.include_router(ai_router, prefix="/api")
 
 @app.get("/")
 def read_root():
-    return {"message": "Bienvenue sur ProStory-AI API", "docs": "/docs"}
+    return {"message": "Bienvenue sur Connex API", "docs": "/docs"}
 
 
 @app.get("/health")

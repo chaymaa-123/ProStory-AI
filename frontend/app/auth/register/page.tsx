@@ -61,7 +61,7 @@ export default function RegisterPage() {
         <Card className="w-full max-w-md p-8 shadow-2xl border-muted/50 rounded-3xl backdrop-blur-sm bg-card/80">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-black tracking-tighter mb-2">Rejoins l'aventure</h1>
-            <p className="text-sm text-muted-foreground">Crée ton profil ProStory-AI en quelques secondes.</p>
+            <p className="text-sm text-muted-foreground">Crée ton profil Connex en quelques secondes.</p>
 
             {/* Sélecteur de rôle (Utilisateur / Entreprise) */}
             <div className="flex gap-3 mt-8 p-1 bg-muted/30 rounded-2xl">

@@ -65,12 +65,12 @@ export default function LoginPage() {
           <Card className="p-8 shadow-lg border-muted">
             {/* Entête de la carte */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-50 rounded-2xl mb-4 text-blue-600">
-                <LogIn className="w-7 h-7" />
+              <div className="inline-flex items-center justify-center w-32 h-32 bg-background rounded-3xl mb-4 overflow-hidden border border-muted shadow-inner">
+                <img src="/logo.png" alt="Logo" className="w-28 h-28 object-contain" />
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-4">Bienvenue</h1>
               <p className="text-sm text-muted-foreground mb-6">
-                Connectez-vous pour accéder à votre espace ProStory-AI.
+                Connectez-vous pour accéder à votre espace Connex.
               </p>
             </div>
 
@@ -158,7 +158,7 @@ export default function LoginPage() {
           {/* Note de sécurité */}
           <div className="mt-8 text-center">
             <p className="text-xs text-gray-400 flex items-center justify-center gap-2">
-              <Globe className="w-3 h-3" /> Plateforme sécurisée par ProStory-AI
+              <Globe className="w-3 h-3" /> Plateforme sécurisée par Connex
             </p>
           </div>
         </div>
