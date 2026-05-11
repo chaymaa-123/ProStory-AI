@@ -12,24 +12,21 @@ import { api } from '@/lib/api'
 
 interface CompanyInsights {
   company_id: string
-  total_experiences: number
-  sentiment_distribution: {
-    positif: number
-    neutre: number
-    negatif: number
-  }
+  total: number
+  positive: number
+  neutral: number
+  negative: number
   dominant_sentiment: string
-  keywords: Array<{ name: string; count: number }>
-  trend_data: Array<{ date: string; positive: number; neutral: number; negative: number }>
+  keywords: Array<[string, number]>
   summary: string
   confidence: string
-  updated_at: string | null
+  analysis_timestamp: string
 }
 
 export default function DashboardPage() {
   const [insights, setInsights] = useState<CompanyInsights | null>(null)
   const [loading, setLoading] = useState(true)
-  const [companyId] = useState('demo-company-id') // TODO: Récupérer depuis l'utilisateur connecté
+  const [companyId] = useState('17ef1c45-e07a-48f2-bb6d-c1621015e32f') // TechNova Solutions Seeded ID
 
   useEffect(() => {
     fetchCompanyInsights()
@@ -38,11 +35,10 @@ export default function DashboardPage() {
   const fetchCompanyInsights = async () => {
     try {
       setLoading(true)
-      const response = await api.get(`/api/company/${companyId}/insights`)
+      const response = await api.get(`/api/ai/company/${companyId}/insights`)
       setInsights(response.data)
     } catch (error) {
       console.error('Failed to fetch company insights', error)
-      // Garder les données mock si l'API échoue
     } finally {
       setLoading(false)
     }
@@ -62,11 +58,17 @@ export default function DashboardPage() {
   }
 
   // Utiliser les données réelles ou les données mock par défaut
-  const totalExperiences = insights?.total_experiences || 247
-  const sentimentDist = insights?.sentiment_distribution || { positif: 67.6, neutre: 23.9, negatif: 8.5 }
-  const dominantSentiment = insights?.dominant_sentiment || 'positif'
-  const summary = insights?.summary || "Your company is perceived as having a strong culture with great career growth opportunities. Employees appreciate the collaborative environment, though some mention that internal communication could be improved."
-  const trendData = insights?.trend_data || [
+  const totalExperiences = insights?.total || 0
+  const sentimentDist = { 
+    positif: insights?.positive || 0, 
+    neutre: insights?.neutral || 0, 
+    negatif: insights?.negative || 0 
+  }
+  const dominantSentiment = insights?.dominant_sentiment || 'neutre'
+  const summary = insights?.summary || "Aucun résumé disponible."
+  
+  // Données de tendance (fictives pour l'instant car le backend ne les génère pas encore par date)
+  const trendData = [
     { date: 'Mar 1', positive: 45, neutral: 30, negative: 12 },
     { date: 'Mar 8', positive: 52, neutral: 28, negative: 10 },
     { date: 'Mar 15', positive: 58, neutral: 25, negative: 8 },

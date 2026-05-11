@@ -53,8 +53,9 @@ Nous travaillons par fonctionnalités complètes pour une progression rapide et 
 - **Frontend** : React + TailwindCSS
 - **Backend** : FastAPI (Python)
 - **Database** : Supabase (PostgreSQL + pgvector)
-- **IA** : Transformers (Multilingual Sentiment) + KeyBERT (Keywords)
-- **Auth** : Supabase Auth
+- **IA** : Transformers (`nlptown/bert-base-multilingual-uncased-sentiment`) + KeyBERT (`all-MiniLM-L6-v2`)
+- **Auth** : Supabase Auth (synchronisé avec la table `users`)
+- **Analytics** : Pipeline de traitement batch avec calcul de score de perception et extraction de thèmes.
 
 ---
 
@@ -206,21 +207,20 @@ Si les variables `.env` semblent ne pas être détectées dans Docker, nous util
 ProStory-AI/
 ├── backend/                 # FastAPI
 │   ├── app/
-│   │   ├── coeur/          # Configuration Supabase
-│   │   ├── ia/             # Logique IA (embeddings, similarité)
-│   │   ├── modeles/        # Modèles de données
-│   │   ├── routes/         # Endpoints API
+│   │   ├── coeur/          # Configuration Supabase & Base de données
+│   │   ├── ai/             # Pipeline IA (Sentiment, Keywords, Analytics)
+│   │   ├── repositories/   # Accès aux données Supabase
+│   │   ├── routes/         # Endpoints API (Experiences, AI, Events)
 │   │   ├── services/       # Logique métier
-│   │   └── schemas/        # Schémas Pydantic
+│   │   └── schemas/        # Schémas Pydantic (Validation)
+│   ├── seed_poc_data.py    # Script d'injection de données POC (60 expériences)
 │   └── requirements.txt
-├── frontend/               # React
-│   ├── src/
-│   │   ├── components/     # Composants réutilisables
-│   │   ├── pages/          # Pages principales
-│   │   ├── services/       # Appels API
-│   │   └── utils/          # Utilitaires
+├── frontend/               # Next.js (App Router)
+│   ├── app/                # Pages & Layouts (Dashboard, Insights, Feed)
+│   ├── components/         # Composants UI (Shadcn, Lucide)
+│   ├── lib/                # Client API & Utilitaires
 │   └── package.json
-├── docker-compose.yml      # Configuration Docker (PostgreSQL + pgvector)
+├── docker-compose.yml      # Orchestration (Backend IA + Frontend Next.js)
 └── README.md
 ```
 

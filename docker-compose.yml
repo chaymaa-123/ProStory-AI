@@ -43,7 +43,7 @@ services:
       - .env
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
       - PORT=3000
     restart: unless-stopped
     command: npm run dev -- -H 0.0.0.0

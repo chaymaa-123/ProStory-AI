@@ -141,15 +141,15 @@ def calculate_statistics(sentiments: List[str]) -> Dict[str, Any]:
             "positive_pct": 0.0,
             "negative_pct": 0.0,
             "neutral_pct": 0.0,
-            "dominant_sentiment": "neutral"
+            "dominant_sentiment": "neutre"
         }
     
     total = len(sentiments)
     counts = Counter(sentiments)
     
-    positive = counts.get("positive", 0)
-    negative = counts.get("negative", 0)
-    neutral = counts.get("neutral", 0)
+    positive = counts.get("positif", 0)
+    negative = counts.get("negatif", 0)
+    neutral = counts.get("neutre", 0)
     
     # Calcul des pourcentages
     positive_pct = round(positive / total * 100, 1) if total else 0
@@ -157,7 +157,7 @@ def calculate_statistics(sentiments: List[str]) -> Dict[str, Any]:
     neutral_pct = round(neutral / total * 100, 1) if total else 0
     
     # Sentiment dominant
-    dominant_sentiment = counts.most_common(1)[0][0] if total else "neutral"
+    dominant_sentiment = counts.most_common(1)[0][0] if total else "neutre"
     
     return {
         "positive": positive,
@@ -210,7 +210,7 @@ def create_empty_result() -> Dict[str, Any]:
         "negative": 0.0,
         "neutral": 0.0,
         "total": 0,
-        "dominant_sentiment": "neutral",
+        "dominant_sentiment": "neutre",
         "keywords": [],
         "keyword_count": 0,
         "summary": "Aucune expérience à analyser",
@@ -238,7 +238,7 @@ def create_error_result(error_message: str) -> Dict[str, Any]:
         "negative": 0.0,
         "neutral": 0.0,
         "total": 0,
-        "dominant_sentiment": "neutral",
+        "dominant_sentiment": "neutre",
         "keywords": [],
         "keyword_count": 0,
         "summary": f"Erreur lors de l'analyse : {error_message}",

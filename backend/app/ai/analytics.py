@@ -9,6 +9,7 @@ from pydantic import BaseModel
 import logging
 
 from .pipeline import process_experiences, test_pipeline
+from ..repositories.repo_experience import RepositoryExperience
 
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
@@ -33,7 +34,6 @@ class BatchAnalysisRequest(BaseModel):
     experiences: List[ExperienceInput]
     max_experiences: Optional[int] = 30
 
-# Endpoints principaux
 @router.get("/company/{company_id}/insights")
 async def get_company_insights(
     company_id: str,
@@ -41,22 +41,13 @@ async def get_company_insights(
     include_summary: bool = Query(True, description="Inclure un résumé textuel")
 ):
     """
-    Analyse les insights pour une entreprise spécifique
-    
-    Args:
-        company_id (str): ID de l'entreprise
-        max_experiences (int): Nombre max d'expériences à traiter
-        include_summary (bool): Inclure le résumé textuel
-        
-    Returns:
-        Dict[str, Any]: Insights complets de l'entreprise
+    Analyse les insights pour une entreprise spécifique depuis la base de données
     """
     try:
-        logger.info(f"Demande d'insights pour l'entreprise {company_id}")
+        logger.info(f"Demande d'insights RÉELS pour l'entreprise {company_id}")
         
-        # TODO: Récupérer depuis la base de données Supabase
-        # Pour l'instant, données de test
-        experiences = get_test_experiences(company_id)
+        # Récupérer depuis la base de données Supabase
+        experiences = RepositoryExperience.obtenir_par_entreprise(company_id, limit=max_experiences)
         
         if not experiences:
             logger.warning(f"Aucune expérience trouvée pour l'entreprise {company_id}")
@@ -207,7 +198,7 @@ def create_empty_insights(company_id: str) -> Dict[str, Any]:
         "negative": 0.0,
         "neutral": 0.0,
         "total": 0,
-        "dominant_sentiment": "neutral",
+        "dominant_sentiment": "neutre",
         "keywords": [],
         "keyword_count": 0,
         "summary": f"Aucune expérience disponible pour l'entreprise {company_id}",

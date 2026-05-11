@@ -13,17 +13,23 @@ interface Theme {
   trend: 'up' | 'down' | 'stable'
 }
 
-interface CompanyThemes {
+interface CompanyInsights {
   company_id: string
-  positive_themes: Theme[]
-  negative_themes: Theme[]
-  total_themes: number
+  total: number
+  positive: number
+  neutral: number
+  negative: number
+  dominant_sentiment: string
+  keywords: Array<[string, number]>
+  summary: string
+  confidence: string
+  analysis_timestamp: string
 }
 
 export default function InsightsPage() {
-  const [themes, setThemes] = useState<CompanyThemes | null>(null)
+  const [insights, setInsights] = useState<CompanyInsights | null>(null)
   const [loading, setLoading] = useState(true)
-  const [companyId] = useState('demo-company-id') // TODO: Récupérer depuis l'utilisateur connecté
+  const [companyId] = useState('17ef1c45-e07a-48f2-bb6d-c1621015e32f') // TechNova Solutions Seeded ID
 
   useEffect(() => {
     fetchCompanyThemes()
@@ -32,30 +38,25 @@ export default function InsightsPage() {
   const fetchCompanyThemes = async () => {
     try {
       setLoading(true)
-      const response = await api.get(`/api/company/${companyId}/themes`)
-      setThemes(response.data)
+      const response = await api.get(`/api/ai/company/${companyId}/insights`)
+      setInsights(response.data)
     } catch (error) {
-      console.error('Failed to fetch company themes', error)
-      // Garder les données mock si l'API échoue
+      console.error('Failed to fetch company insights', error)
     } finally {
       setLoading(false)
     }
   }
 
-  // Utiliser les données réelles ou les données mock par défaut
-  const positiveThemes = themes?.positive_themes || [
-    { name: 'Company Culture', count: 47, trend: 'up' as const },
-    { name: 'Career Growth', count: 42, trend: 'up' as const },
-    { name: 'Team Collaboration', count: 35, trend: 'stable' as const },
-    { name: 'Work-Life Balance', count: 28, trend: 'up' as const },
-    { name: 'Leadership', count: 23, trend: 'stable' as const },
-  ]
+  // Mapper les keywords du backend aux thèmes
+  const allThemes: Theme[] = (insights?.keywords || []).map(([name, count]) => ({
+    name,
+    count,
+    trend: 'stable' as const
+  }))
 
-  const negativeThemes = themes?.negative_themes || [
-    { name: 'Communication', count: 12, trend: 'down' as const },
-    { name: 'Process Clarity', count: 8, trend: 'stable' as const },
-    { name: 'Remote Work Limitations', count: 5, trend: 'down' as const },
-  ]
+  // Répartition simplifiée pour la démo
+  const positiveThemes = allThemes.slice(0, 5)
+  const negativeThemes = allThemes.slice(5, 8)
 
   if (loading) {
     return (
@@ -101,7 +102,6 @@ export default function InsightsPage() {
               Our AI analyzes all experiences shared about your company to identify recurring topics and themes. Themes are categorized as positive or negative based on the sentiment context in which they appear. Arrows indicate whether mentions are increasing (↑), decreasing (↓), or stable (→) over the last 30 days.
             </p>
           </Card>
-
           {/* Theme statistics */}
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="p-6">
@@ -109,7 +109,7 @@ export default function InsightsPage() {
                 Total Unique Themes
               </p>
               <p className="text-3xl font-bold text-foreground">
-                {themes?.total_themes || 18}
+                {insights?.keyword_count || allThemes.length}
               </p>
             </Card>
 

@@ -160,6 +160,34 @@ class RepositoryExperience:
         return [RepositoryExperience._format_single_experience(exp) for exp in (response.data or [])]
 
     @staticmethod
+    def obtenir_par_entreprise(company_id: str, skip: int = 0, limit: int = 20) -> List[Dict[str, Any]]:
+        """
+        Récupère les expériences d'une entreprise.
+        Utilise une approche en 2 étapes car PostgREST ne supporte pas le filtre
+        sur tables jointes avec !inner de manière fiable.
+        """
+        # Étape 1 : Récupérer les IDs d'expériences depuis la junction table
+        junction_resp = supabase.table(RepositoryExperience.EXPERIENCE_COMPANY_TABLE)\
+            .select("experience_id")\
+            .eq("company_id", company_id)\
+            .range(skip, skip + limit - 1)\
+            .execute()
+        
+        if not junction_resp.data:
+            return []
+        
+        experience_ids = [row["experience_id"] for row in junction_resp.data]
+        
+        # Étape 2 : Récupérer les expériences complètes avec leurs relations
+        response = supabase.table(RepositoryExperience.EXPERIENCES_TABLE)\
+            .select("*, author:users!experiences_user_id_fkey(name), tags:experience_tags(tag:tags(name)), companies:experience_company(company:companies(id, name)), events:experience_event(event:events(title))")\
+            .in_("id", experience_ids)\
+            .order("created_at", desc=True)\
+            .execute()
+        
+        return [RepositoryExperience._format_single_experience(exp) for exp in (response.data or [])]
+
+    @staticmethod
     def _format_single_experience(exp: Dict[str, Any]) -> Dict[str, Any]:
         """Aplatit les relations Supabase complexes vers un format JSON simple pour le frontend."""
         # Extraction des tags
