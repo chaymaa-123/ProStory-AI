@@ -1,227 +1,226 @@
-# ProStory-AI
+# Connex
 
-Plateforme de partage d'expériences professionnelles avec IA de recommandation.
+Plateforme sociale innovante dédiée au partage d'expériences professionnelles, enrichie par l'intelligence artificielle pour l'extraction d'insights stratégiques.
 
-## 🎯 Méthodologie de Travail : Feature-Based Workflow
+## 🎯 Vision du Projet
 
-Nous travaillons par fonctionnalités complètes pour une progression rapide et cohérente :
-
-### 🧩 Découpage du Projet en Features
-
-**🔹 Feature 1 : Authentification + Users**
-- DB : table users (Supabase Auth)
-- Backend : endpoints login/register
-- Front : pages login/register
-- 🎯 Objectif : système fonctionnel de base
-
-**🔹 Feature 2 : Publication d'expérience**
-- DB : table stories
-- Backend : POST /stories
-- Front : formulaire de publication
-- 🎯 Objectif : pouvoir poster
-
-**🔹 Feature 3 : Feed (affichage)**
-- Backend : GET /stories
-- Front : affichage liste des posts
-- 🎯 Objectif : voir les posts
-
-**🔹 Feature 4 : Interaction (likes/commentaires)**
-- DB : tables likes, comments
-- Backend : endpoints correspondants
-- Front : boutons + affichage
-- 🎯 Objectif : interactions sociales
-
-**🔹 Feature 5 : IA (cœur du projet)**
-- Embeddings avec OpenAI/SentenceTransformers
-- Stockage pgvector dans Supabase
-- Calcul de similarité
-- 🎯 Objectif : recommandations intelligentes
-
-**🔹 Feature 6 : Recherche sémantique**
-- Backend : endpoint search
-- Front : input recherche
-- 🎯 Objectif : recherche intelligente
-
-**🔹 Feature 7 : Finition**
-- UI amélioration, sécurité, tests
-- 🎯 Objectif : production ready
+Connex transforme les récits professionnels bruts en données exploitables pour les utilisateurs et les entreprises. Notre mission est de créer un espace sécurisé où les expériences partagées deviennent une source d'informations stratégiques grâce à l'analyse par IA.
 
 ---
 
 ## 🛠 Stack Technique
 
-- **Frontend** : React + TailwindCSS
-- **Backend** : FastAPI (Python)
-- **Database** : Supabase (PostgreSQL + pgvector)
-- **IA** : Transformers (`nlptown/bert-base-multilingual-uncased-sentiment`) + KeyBERT (`all-MiniLM-L6-v2`)
-- **Auth** : Supabase Auth (synchronisé avec la table `users`)
-- **Analytics** : Pipeline de traitement batch avec calcul de score de perception et extraction de thèmes.
+### Frontend
+- **Next.js 16** - Framework React moderne avec SSR
+- **TailwindCSS** - Design system responsive
+- **Radix UI** - Composants accessibles
+- **Lucide React** - Icônes modernes
+- **Recharts** - Visualisations de données
+
+### Backend
+- **FastAPI** - API REST performante avec documentation auto-générée
+- **Python 3.10+** - Écosystème riche pour l'IA
+- **JWT + Bcrypt** - Authentification sécurisée
+- **Pydantic** - Validation des données
+
+### Base de Données
+- **Supabase (PostgreSQL)** - Base de données scalable
+- **pgvector** - Stockage d'embeddings vectoriels
+
+### Intelligence Artificielle
+- **sentence-transformers** - Embeddings sémantiques
+- **transformers (Hugging Face)** - Analyse de texte
+- **KeyBERT** - Extraction de mots-clés
+- **PyTorch** - Framework d'apprentissage profond
+- **NumPy** - Calculs scientifiques
 
 ---
 
-## 📋 Prérequis
+## � Démarrage Rapide
 
-Avant de commencer, votre machine doit avoir :
-- [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/) (Version 18+ recommandée)
-- [Python](https://www.python.org/downloads/) (Version 3.10+ recommandée)
-- [Docker](https://www.docker.com/products/docker-desktop/) (Recommandé - pour lancer l'app complète sans dépendances)
-- Compte [Supabase](https://supabase.com/) (gratuit)
-
----
-
-## 🚀 Installation Étape par Étape
+### Prérequis
+- [Docker](https://www.docker.com/products/docker-desktop/) (Recommandé)
+- [Node.js](https://nodejs.org/) (v18+)
+- [Python](https://www.python.org/downloads/) (v3.10+)
+- Compte [Supabase](https://supabase.com/)
 
 ### 1. Cloner le dépôt
-
 ```bash
-git clone <URL_DU_DEPOT_GITHUB>
-cd prostory-ai
+git clone https://github.com/chaymaa-123/ProStory-AI.git
+cd ProStory-AI
 ```
 
 ### 2. Configuration Supabase
-
-1. **Créez un projet Supabase** : [supabase.com/dashboard](https://supabase.com/dashboard)
-2. **Activez pgvector** dans votre projet Supabase :
-   - Allez dans Settings > Database > Extensions
-   - Cherchez "vector" et activez `pgvector`
-3. **Récupérez vos clés** :
-   - Project URL (Settings > API)
-   - anon key et service_role key
-
----
+1. Créez un projet sur [supabase.com/dashboard](https://supabase.com/dashboard)
+2. Activez l'extension `pgvector` dans Settings > Database > Extensions
+3. Récupérez vos clés API dans Settings > API
 
 ### 3. Lancement avec Docker (Recommandé) 🐳
+```bash
+# Copier et configurer les variables d'environnement
+cp .env.example .env
+# Éditer .env avec vos clés Supabase
 
-**Pour lancer l'application complète sans dépendances :**
+# Lancer l'application complète
+docker-compose up -d
+```
 
-1. **Configurez vos variables d'environnement** :
-   - Copiez `.env.example` vers `.env`
-   - Remplissez vos clés Supabase
+L'application sera disponible sur :
+- Frontend : http://localhost:3001
+- Backend API : http://localhost:8000
+- Documentation API : http://localhost:8000/docs
 
-2. **Lancez l'application avec Docker Compose** :
-   ```bash
-   docker-compose up -d
-   ```
-   Cela démarre automatiquement :
-   - Backend FastAPI sur `http://localhost:8000`
-   - Frontend Next.js sur `http://localhost:3001`
-
-3. **Vérifiez que tout fonctionne** :
-   ```bash
-   docker-compose ps
-   ```
-
-4. **Arrêtez l'application** (quand vous avez fini) :
-   ```bash
-   docker-compose down
-   ```
+### 4. Arrêter l'application
+```bash
+docker-compose down
+```
 
 ---
 
-#### Backend (Python / FastAPI)
+## 📋 Fonctionnalités Principales
 
-1. **Allez dans le dossier backend** :
-   ```bash
-   cd backend
-   ```
+### 🔄 Pipeline IA Complet
+- **Analyse de sentiment** : Évalue les émotions dans les récits
+- **Extraction de mots-clés** : Identifie les thèmes principaux
+- **Embeddings sémantiques** : Recherche intelligente par similarité
+- **Dashboard analytique** : Insights pour les entreprises
 
-2. **Créez l'environnement virtuel** :
-   ```bash
-   python -m venv venv
-   ```
+### 👥 Fonctionnalités Sociales
+- **Authentification sécurisée** : JWT + Bcrypt
+- **Fil d'actualité** : Consultation des expériences communautaires
+- **Interactions** : Likes, commentaires, sauvegardes
+- **Recherche avancée** : Filtrage par secteur et mots-clés
 
-3. **Activez l'environnement virtuel** :
-   - Sur **Windows** : `.\venv\Scripts\activate`
-   - Sur **Mac/Linux** : `source venv/bin/activate`
-
-4. **Installez les dépendances** :
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Configurez les variables d'environnement** :
-   - Copiez `.env.example` vers `.env`
-   - Remplissez vos clés Supabase
-
-6. **Démarrez le serveur Backend** :
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-   L'API est disponible sur : `http://localhost:8000`
-
-#### Frontend (React)
-
-1. **Ouvrez un NOUVEAU terminal** et allez dans le frontend :
-   ```bash
-   cd frontend
-   ```
-
-2. **Installez les dépendances** :
-   ```bash
-   npm install
-   ```
-
-3. **Configurez Supabase dans le frontend** :
-   - Créez `.env.local` avec vos clés Supabase
-   - Le template est déjà configuré
-
-4. **Démarrez le serveur Frontend** :
-   ```bash
-   npm run dev
-   ```
-   Le site est disponible sur : `http://localhost:5173`
+### 🏢 Dashboard Entreprise
+- **Insights stratégiques** : Analyse des tendances
+- **Perception employeur** : Sentiment des employés
+- **Benchmarking** : Comparaison sectorielle
 
 ---
 
-## 🛠 Guide de Survie Quotidien
-
-**Pour lancer l'application rapidement (vous et vos collègues) :**
-1. Configurez vos clés Supabase dans `.env`
-2. Lancez : `docker compose up -d --build`
-3. Accédez à l'app sur `http://localhost:3001`
-
-**💡 Note pour Windows :**
-Si les variables `.env` semblent ne pas être détectées dans Docker, nous utilisons désormais `env_file: .env` dans `docker-compose.yml` pour garantir la compatibilité. Assurez-vous que le fichier `.env` est à la racine du projet.
-
-**Pour développer localement :**
-1. Activer l'environnement Python et lancer `uvicorn`
-2. Lancer `npm run dev` dans le frontend
-
-**Si ça plante après un `git pull` :**
-- Refaites `npm install` ou `pip install -r requirements.txt`
-- Vérifiez les variables d'environnement
-- Redémarrez Docker : `docker-compose down && docker-compose up -d`
-
-**Workflow par feature :**
-1. Créez une branche : `git checkout -b feature/nom-de-la-feature`
-2. Travaillez Backend + Front (la DB est Supabase)
-3. Testez la feature complète
-4. Mergez et passez à la suivante
-
----
-
-## 📁 Structure du Projet
+## � Architecture du Projet
 
 ```
-ProStory-AI/
-├── backend/                 # FastAPI
+Connex/
+├── backend/                    # FastAPI + Pipeline IA
 │   ├── app/
-│   │   ├── coeur/          # Configuration Supabase & Base de données
-│   │   ├── ai/             # Pipeline IA (Sentiment, Keywords, Analytics)
-│   │   ├── repositories/   # Accès aux données Supabase
-│   │   ├── routes/         # Endpoints API (Experiences, AI, Events)
-│   │   ├── services/       # Logique métier
-│   │   └── schemas/        # Schémas Pydantic (Validation)
-│   ├── seed_poc_data.py    # Script d'injection de données POC (60 expériences)
+│   │   ├── ai/               # Modules IA (sentiment, keywords, analytics)
+│   │   ├── coeur/            # Configuration Supabase & sécurité
+│   │   ├── repositories/     # Accès aux données
+│   │   ├── routes/           # Endpoints API
+│   │   ├── services/         # Logique métier
+│   │   └── schemas/          # Validation Pydantic
+│   ├── seed_poc_data.py      # Données de démonstration
 │   └── requirements.txt
-├── frontend/               # Next.js (App Router)
-│   ├── app/                # Pages & Layouts (Dashboard, Insights, Feed)
-│   ├── components/         # Composants UI (Shadcn, Lucide)
-│   ├── lib/                # Client API & Utilitaires
+├── frontend/                  # Next.js 16
+│   ├── app/                  # Pages et layouts
+│   ├── components/           # Composants UI
+│   ├── lib/                 # Utilitaires et client API
 │   └── package.json
-├── docker-compose.yml      # Orchestration (Backend IA + Frontend Next.js)
+├── docker-compose.yml         # Orchestration complète
+├── rapport.md               # Rapport de projet détaillé
 └── README.md
 ```
 
-Chaque feature ajoute des fichiers dans les dossiers correspondants en suivant cette structure.
+---
+
+## 🔧 Développement Local
+
+### Backend (FastAPI)
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+### Frontend (Next.js)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 📊 API Endpoints
+
+### Authentification
+- `POST /api/auth/login` - Connexion utilisateur
+- `POST /api/auth/register` - Inscription
+
+### Expériences
+- `GET /experiences` - Lister les expériences
+- `POST /experiences` - Créer une expérience
+- `GET /experiences/{id}` - Détails d'une expérience
+
+### Analyse IA
+- `POST /ai/analyze` - Analyser un texte
+- `GET /ai/company-insights/{company_id}` - Insights entreprise
+
+### Documentation complète : http://localhost:8000/docs
+
+---
+
+## 🎯 Méthodologie de Développement
+
+Nous adoptons une approche **Feature-Based Workflow** :
+
+1. **Authentification** : Système de connexion sécurisé
+2. **Publication** : Création et partage d'expériences
+3. **Feed** : Affichage dynamique du contenu
+4. **Interactions** : Likes, commentaires, favoris
+5. **Pipeline IA** : Analyse sémantique et extraction d'insights
+6. **Dashboard** : Interface analytique pour entreprises
+7. **Finition** : Tests, sécurité, optimisation
+
+---
+
+## 🤝 Contribuer
+
+1. Forker le projet
+2. Créer une branche : `git checkout -b feature/nom-de-la-feature`
+3. Commiter les changements : `git commit -m 'Ajout de la feature X'`
+4. Pousser : `git push origin feature/nom-de-la-feature`
+5. Ouvrir une Pull Request
+
+---
+
+## 📝 License
+
+Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour détails.
+
+---
+
+## 🔗 Liens Utiles
+
+- **Documentation API** : http://localhost:8000/docs
+- **Dashboard Supabase** : https://supabase.com/dashboard
+- **Rapport de projet** : [rapport.md](./rapport.md)
+- **Issues** : [GitHub Issues](https://github.com/chaymaa-123/ProStory-AI/issues)
+
+---
+
+## 📈 Roadmap
+
+### Version 1.0 (Actuelle)
+- ✅ Authentification sécurisée
+- ✅ Pipeline IA complet
+- ✅ Dashboard entreprise
+- ✅ Fil d'actualité
+
+### Version 2.0 (En cours)
+- 🔄 Agent conversationnel IA
+- 🔄 Système de certification
+- 🔄 Analyse prédictive
+- 🔄 Gamification
+
+### Version 3.0 (Futur)
+- 📋 Blockchain pour vérification
+- 📋 Dashboard analytique avancé
+- 📋 Expansion B2B
+
+---
+
+**Connex - Transformons les expériences en insights stratégiques** 🚀
