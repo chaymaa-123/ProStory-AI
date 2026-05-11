@@ -60,7 +60,7 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
   // Éviter l'erreur d'hydratation (mismatch serveur/client)
   if (!mounted) {
     return (
-      <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur h-16">
+      <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur h-24">
         <div className="w-full max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
           <div className="font-semibold text-lg flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary/20" />
@@ -74,13 +74,15 @@ export function Navigation({ currentPath = '/' }: NavigationProps) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="w-full max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-24">
           
           {/* LOGO */}
-          <Link href="" className="flex items-center gap-2 font-semibold text-lg hover:opacity-90 transition-opacity">
-            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
-              C
-            </div>
+          <Link href="/" className="flex items-center gap-2 font-semibold text-lg hover:opacity-90 transition-opacity">
+            <img 
+              src="/logo.png" 
+              alt="Connex Logo" 
+              className="w-24 h-24 object-contain scale-125"
+            />
             <span className="hidden sm:inline text-transparent bg-clip-text bg-linear-to-r from-primary to-accent font-bold">Connex</span>
           </Link>
 

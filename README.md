@@ -47,8 +47,8 @@ Connex transforme les récits professionnels bruts en données exploitables pour
 
 ### 1. Cloner le dépôt
 ```bash
-git clone https://github.com/chaymaa-123/ProStory-AI.git
-cd ProStory-AI
+git clone <URL_DU_DEPOT_GITHUB>
+cd prostory-ai
 ```
 
 ### 2. Configuration Supabase
@@ -109,8 +109,8 @@ Connex offre une solution complète pour les entreprises souhaitant analyser leu
 ## � Architecture du Projet
 
 ```
-Connex/
-├── backend/                    # FastAPI + Pipeline IA
+ProStory-AI/
+├── backend/                 # FastAPI
 │   ├── app/
 │   │   ├── ai/               # Modules IA (sentiment, keywords, analytics)
 │   │   ├── coeur/            # Configuration Supabase & sécurité
