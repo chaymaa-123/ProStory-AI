@@ -1,118 +1,126 @@
-# 📊 Trame de Présentation : Plateforme CONNEX (IA & Expériences)
-
-Ce document contient le plan détaillé des 13 diapositives pour votre soutenance.
+# 📊 Trame de Présentation : Plateforme CONNEX
 
 ---
 
 ## 🏗️ Slide 1 : Titre & Introduction
 - **Visuel :** Logo Connex au centre (`logo.png`)
 - **Titre :** **Connex** : Plateforme Intelligente de Partage d'Expériences Professionnelles
-- **Sous-titre :** Projet d'Architecture de Données & Intelligence Artificielle - EMSI
-- **Présentateurs :**
-    - Chaymaa Amdaai
-    - Riyadh
-    - Mehdi
-- **Date :** Mai 2026
+- **Sous-titre :** Projet d'Arch4itecture de Données & Intelligence Artificielle
+- **Équipe :** Chaymaa AMDAAI, RIYADH, MEHDI
+- **EMSI 2026**
 
 ---
 
-## 📑 Slide 2 : Sommaire (Agenda)
-1.  Contexte et Problématique
-2.  La Solution Connex
-3.  Objectifs du Projet
-4.  Architecture Globale du Système
-5.  Stack Technique (Front, Back, Cloud)
-6.  Gestion des Données & Supabase
-7.  IA : Analyse de Sentiment (BERT)
-8.  Extraction de Thèmes & Keywords
-9.  Recherche Sémantique (Vector Search)
-10. Fonctionnalités Entreprises & Dashboard
-11. Ingestion de Données POC (Seeding)
-12. Monitoring & Déploiement Docker
-13. Conclusion & Perspectives
+## 📑 Slide 2 : Sommaire
+1. Contexte & Problématique
+2. La Solution Connex
+3. Objectifs & Valeur Ajoutée
+4. **Architecture Technique & Diagramme**
+5. Stack Technologique
+6. Flux de Données (Data Pipeline)
+7. Le Moteur IA (Sentiment & Thèmes)
+8. Recherche Sémantique & Vectorielle
+9. Dashboard & Business Intelligence
+10. Monitoring & Docker
+11. Conclusion & Perspectives
 
 ---
 
-## 🔍 Slide 3 : Contexte et Problématique
-- **Le constat :** Difficulté pour les talents de trouver des retours d'expérience authentiques et non censurés.
-- **La problématique :** Comment transformer des milliers de témoignages textuels en données exploitables pour les entreprises ?
-- **Le besoin :** Une plateforme capable d'analyser le langage naturel pour détecter le ressenti (sentiment) et les sujets critiques.
+## 🔍 Slide 3 : Contexte & Problématique
+- **Le Silence des Données :** Des milliers d'expériences sont partagées sur le web sans être analysées.
+- **Opacité :** Difficulté pour les talents de connaître la réalité interne des entreprises.
+- **Besoin :** Automatiser la transformation de textes bruts en **insights actionnables**.
 
 ---
 
-## 💡 Slide 4 : La Solution Connex
-- **Concept :** Un réseau social professionnel intelligent où chaque expérience est analysée par une IA.
-- **Valeur ajoutée :**
-    - **Utilisateurs :** Découvrir des entreprises via des insights objectifs.
-    - **Entreprises :** Comprendre la perception de leur marque et agir via des événements ciblés.
+## 💡 Slide 4 : Connex : La Solution
+- **Concept :** Un hub social professionnel qui "comprend" le contenu.
+- **Innovation :** Analyse automatique du climat social via les témoignages.
+- **Cible :** Étudiants, Professionnels en quête de mobilité, et RH.
 
 ---
 
 ## 🎯 Slide 5 : Objectifs du Projet
-- **Technique :** Architecture découplée FastAPI / Next.js.
-- **Analytique :** Automatiser le traitement de texte (NLP) pour générer des scores de perception.
-- **UX/UI :** Interface premium et dynamique (Design moderne).
-- **Performance :** Recherche vectorielle pour une pertinence accrue.
+- **Intelligence :** Dépasser la simple recherche textuelle par la recherche sémantique.
+- **Transparence :** Générer un "Score de Satisfaction" objectif basé sur l'IA.
+- **Scalabilité :** Architecture prête pour le Big Data.
 
 ---
 
-## ⚙️ Slide 6 : Architecture Globale
-- **Frontend :** Next.js (App Router) – Interface réactive.
-- **Backend :** FastAPI (Python) – Moteur de calcul et API.
-- **Database :** Supabase (PostgreSQL) – Stockage relationnel et vectoriel.
-- **Pipeline IA :** Traitement asynchrone (Sentiment + Keywords).
+## 🛠️ Slide 6 : Architecture du Système (Diagramme)
+*Visuel : Diagramme de flux technique.*
+
+```mermaid
+graph LR
+    subgraph Frontend
+    A[Next.js App] --> B[Axios Client]
+    end
+
+    subgraph Backend_IA
+    B --> C[FastAPI Server]
+    C --> D[BERT Model]
+    C --> E[KeyBERT Model]
+    C --> F[Sentence-Transformers]
+    end
+
+    subgraph Database_Storage
+    C --> G[Supabase/PostgreSQL]
+    G --> H[(pgvector)]
+    G --> I[Auth/Profiles]
+    end
+```
 
 ---
 
-## 🛠️ Slide 7 : Stack Technique
-- **Frontend :** React, TailwindCSS, Shadcn UI.
-- **Backend :** Python, FastAPI, Pydantic.
-- **IA :** HuggingFace Transformers, KeyBERT, Sentence-Transformers.
-- **DevOps :** Docker, Docker-Compose, Supabase Cloud.
+## 💻 Slide 7 : Stack Technologique
+- **Frontend :** Next.js 16, TailwindCSS, Shadcn/UI.
+- **Backend :** FastAPI, Python, Pydantic.
+- **Base de Données :** Supabase, PostgreSQL, pgvector.
+- **Modèles IA :** HuggingFace (BERT, MiniLM).
 
 ---
 
-## 🤖 Slide 8 : Intelligence Artificielle - Sentiment Analysis
-- **Modèle :** `nlptown/bert-base-multilingual-uncased-sentiment`.
-- **Analyse :** Classification automatique des textes en **Positif**, **Neutre** ou **Négatif**.
-- **Objectif :** Alimenter le score de satisfaction global des entreprises.
+## 🔄 Slide 8 : Pipeline de Données (Ingestion)
+- **Collecte :** Ingestion via API REST (Experiences/Stories).
+- **Nettoyage :** Normalisation du texte et gestion des encodages (UTF-8).
+- **Synchronisation :** Liaison temps réel entre Supabase Auth et les profils métiers.
 
 ---
 
-## 🏷️ Slide 9 : Extraction de Mots-Clés
-- **Technologie :** Algorithme KeyBERT.
-- **Extraction :** Identification automatique des concepts clés (ex: "Management", "Salaire", "Télétravail").
-- **Usage :** Visualisation des tendances et nuages de tags dynamiques.
+## 🤖 Slide 9 : Le Moteur IA (Sentiment & Keywords)
+- **Analyse de Sentiment :** Utilisation de **BERT** pour classer le ton (Positif/Neutre/Négatif).
+- **Extraction de Thèmes :** Identification des mots-clés stratégiques via **KeyBERT**.
+- **Impact :** Scoring automatique de la perception de l'entreprise.
 
 ---
 
-## 🚀 Slide 10 : Recherche Sémantique & Vecteurs
-- **Innovation :** Utilisation de **pgvector** dans Supabase.
-- **Principe :** Recherche basée sur le **sens** des phrases (Embeddings) plutôt que sur les mots exacts.
-- **Bénéfice :** Permet de trouver des expériences pertinentes même sans utiliser les mêmes termes.
+## 🚀 Slide 10 : Recherche Sémantique & Vectorielle
+- **Le Cœur de l'Innovation :** Utilisation des **Embeddings** (Vecteurs).
+- **Technologie :** Extension **pgvector** de PostgreSQL.
+- **Avantage :** Compréhension du contexte (ex: "Ambiance" = "Bien-être").
 
 ---
 
-## 📊 Slide 11 : Dashboard Entreprise & Insights
-- **Visualisation :** Graphiques interactifs (Satisfaction, Sentiment, Thèmes).
-- **Gestion :** Création d'événements (Tech Summits, Webinars) pour interagir avec la communauté.
-- **Impact :** Aide les entreprises à améliorer leur culture interne basée sur les feedbacks réels.
+## 📊 Slide 11 : Dashboard & Business Intelligence
+- **Visualisation :** Graphiques Recharts dynamiques.
+- **Insights RH :** Analyse des tendances et des points de douleur des employés.
+- **Events :** Intégration d'événements pour booster l'engagement marque employeur.
 
 ---
 
-## 🐳 Slide 12 : Ingestion & Déploiement
-- **POC Data :** Script de seeding pour injecter 60+ expériences réalistes.
-- **Monitoring :** Containers Docker isolés pour le Frontend et le Backend.
-- **Scalabilité :** Préparé pour un déploiement Cloud (AWS/Vercel).
+## 🐳 Slide 12 : Déploiement & Fiabilité
+- **Docker :** Conteneurisation complète (Frontend + Backend).
+- **Health Checks :** Monitoring de la santé des services.
+- **POC Seeding :** Jeu de données de 60 expériences pour démonstration réelle.
 
 ---
 
 ## 🏁 Slide 13 : Conclusion & Perspectives
-- **Bilan :** Objectifs atteints avec une chaîne complète de traitement IA.
-- **Futur :**
-    - Ajout de notifications temps réel (WebSockets).
-    - Modèle de Machine Learning pour la détection de "Fake News".
-    - Version mobile native.
+- **Bilan :** Pipeline IA complet opérationnel.
+- **Futur :** 
+    - Notifications WebSockets temps réel.
+    - Détection de Fake News via ML.
+    - Migration Cloud Native (AWS).
 
 ---
-*Fin de la présentation - Merci de votre attention*
+**MERCI POUR VOTRE ATTENTION.**
