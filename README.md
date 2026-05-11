@@ -20,8 +20,9 @@ Connex transforme les récits professionnels bruts en données exploitables pour
 ### Backend
 - **FastAPI** - API REST performante avec documentation auto-générée
 - **Python 3.10+** - Écosystème riche pour l'IA
-- **JWT + Bcrypt** - Authentification sécurisée
+- **JWT + Bcrypt** - Authentification sécurisée (utilisateurs + entreprises)
 - **Pydantic** - Validation des données
+- **Architecture microservices** : Séparation claire des responsabilités (User, Company, AI)
 
 ### Base de Données
 - **Supabase (PostgreSQL)** - Base de données scalable
@@ -91,10 +92,17 @@ docker-compose down
 - **Interactions** : Likes, commentaires, sauvegardes
 - **Recherche avancée** : Filtrage par secteur et mots-clés
 
-### 🏢 Dashboard Entreprise
-- **Insights stratégiques** : Analyse des tendances
-- **Perception employeur** : Sentiment des employés
-- **Benchmarking** : Comparaison sectorielle
+### 🏢 Plateforme Entreprise (B2B)
+Connex offre une solution complète pour les entreprises souhaitant analyser leur marque employeur et les retours d'expérience :
+
+- **Dashboard Analytics** : Interface dédiée avec visualisations en temps réel
+- **Insights Stratégiques** : Analyse des tendances et émotions des employés
+- **Perception Employeur** : Score de sentiment global et évolution temporelle
+- **Benchmarking Sectoriel** : Comparaison avec les entreprises du même secteur
+- **Alertes et Notifications** : Suivi des mentions et nouvelles expériences
+- **Exports de Données** : Rapports personnalisables (PDF, Excel, CSV)
+- **Gestion de Profil Entreprise** : Informations publiques et branding
+- **Événements Corporatifs** : Publication d'événements et actualités
 
 ---
 
@@ -154,10 +162,21 @@ npm run dev
 - `GET /experiences` - Lister les expériences
 - `POST /experiences` - Créer une expérience
 - `GET /experiences/{id}` - Détails d'une expérience
+- `POST /experiences/{id}/like` - Liker une expérience
+- `POST /experiences/{id}/comment` - Commenter une expérience
+
+### Entreprise (B2B)
+- `GET /api/company/profile/{id}` - Profil entreprise
+- `POST /api/company/profile` - Créer/modifier profil
+- `GET /api/company/events/{id}` - Événements entreprise
+- `POST /api/company/events` - Créer événement
+- `GET /api/company/analytics/{id}` - Dashboard analytics
 
 ### Analyse IA
 - `POST /ai/analyze` - Analyser un texte
 - `GET /ai/company-insights/{company_id}` - Insights entreprise
+- `GET /ai/sentiment-trends/{company_id}` - Tendances sentiment
+- `GET /ai/keywords-analysis/{company_id}` - Analyse mots-clés
 
 ### Documentation complète : http://localhost:8000/docs
 

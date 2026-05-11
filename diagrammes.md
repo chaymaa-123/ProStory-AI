@@ -395,11 +395,12 @@ graph TB
     end
     
     subgraph "Backend Services"
-        AuthSvc[Service Authentification<br/>JWT + Bcrypt]
+        AuthSvc[Service Authentification<br/>JWT + Bcrypt<br/>Users + Companies]
         ExpSvc[Service Expériences<br/>CRUD Operations]
         IASvc[Service IA Pipeline<br/>Sentiment + Keywords]
-        AnalyticsSvc[Service Analytics<br/>Dashboard Data]
+        AnalyticsSvc[Service Analytics<br/>Dashboard Data<br/>Company Insights]
         EventSvc[Service Événements<br/>Company Events]
+        CompanySvc[Service Entreprise<br/>B2B Features<br/>Profile Management]
     end
     
     subgraph "AI/ML Pipeline"
@@ -429,6 +430,7 @@ graph TB
     Gateway --> IASvc
     Gateway --> AnalyticsSvc
     Gateway --> EventSvc
+    Gateway --> CompanySvc
     
     IASvc --> Sentiment
     IASvc --> Keywords
@@ -439,6 +441,7 @@ graph TB
     ExpSvc --> Supabase
     AnalyticsSvc --> Supabase
     EventSvc --> Supabase
+    CompanySvc --> Supabase
     
     Sentiment --> VectorStore
     Keywords --> VectorStore
@@ -458,6 +461,7 @@ graph TB
         Docker --> IASvc
         Docker --> AnalyticsSvc
         Docker --> EventSvc
+        Docker --> CompanySvc
     end
     
     style UI fill:#e3f2fd
